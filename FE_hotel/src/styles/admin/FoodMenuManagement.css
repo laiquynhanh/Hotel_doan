@@ -1,0 +1,24 @@
+.food-menu-management {
+  padding: 20px;
+}
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.food-thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.modal.show {
+  display: block;
+}

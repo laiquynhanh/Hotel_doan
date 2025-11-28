@@ -1,0 +1,439 @@
+.admin-page {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.admin-sidebar {
+  background: #2c3e50;
+  min-height: 100vh;
+  padding: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+}
+
+.sidebar-header {
+  background: #34495e;
+  padding: 20px;
+  border-bottom: 1px solid #1a252f;
+}
+
+.sidebar-header h4 {
+  color: #fff;
+  margin: 0;
+  font-family: 'Lora', serif;
+  font-size: 24px;
+}
+
+.sidebar-nav {
+  padding: 20px 0;
+}
+
+.sidebar-nav .nav-item {
+  width: 100%;
+  padding: 15px 20px;
+  background: none;
+  border: none;
+  color: #bdc3c7;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.sidebar-nav .nav-item:hover {
+  background: #34495e;
+  color: #fff;
+  border-left-color: #dfa974;
+}
+
+.sidebar-nav .nav-item.active {
+  background: #34495e;
+  color: #fff;
+  border-left-color: #dfa974;
+}
+
+.sidebar-nav .nav-item i {
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-divider {
+  padding: 15px 20px 10px;
+  color: #95a5a6;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-top: 1px solid #1a252f;
+  margin-top: 10px;
+}
+
+.admin-content {
+  margin-left: 16.666667%;
+  padding: 30px;
+  margin-top: 100px;
+  min-height: calc(100vh - 100px);
+}
+
+.dashboard-tab h2,
+.users-tab h2,
+.rooms-tab h2,
+.bookings-tab h2 {
+  font-family: 'Lora', serif;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #dfa974;
+}
+
+/* Tách riêng từng tab với border và padding */
+.dashboard-tab,
+.users-tab,
+.rooms-tab,
+.bookings-tab {
+  background: #fff;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Dashboard Tab - Grid layout cho stat cards */
+.dashboard-tab .row {
+  margin-bottom: 30px;
+}
+
+/* Users Tab - Thêm margin cho table */
+.users-tab .table-responsive {
+  margin-top: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+/* Rooms Tab - Button và table spacing */
+.rooms-tab .d-flex {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.rooms-tab .table-responsive {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+/* Bookings Tab - Table với border */
+.bookings-tab .table-responsive {
+  margin-top: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #fff;
+}
+
+.stat-primary .stat-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-success .stat-icon {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stat-warning .stat-icon {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  color: #333;
+}
+
+.stat-info .stat-icon {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  color: #333;
+}
+
+.stat-info h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 5px 0;
+  font-family: 'Lora', serif;
+}
+
+.stat-info p {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.info-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.info-card h5 {
+  font-family: 'Lora', serif;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.table-responsive {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table thead {
+  background: #f8f9fa;
+}
+
+.table thead th {
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #dfa974;
+  padding: 15px;
+}
+
+.table tbody td {
+  padding: 15px;
+  vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Action Buttons trong table */
+.btn-sm i {
+  margin-right: 5px;
+}
+
+.btn-warning {
+  background: #f39c12;
+  border: none;
+  color: #fff;
+}
+
+.btn-warning:hover {
+  background: #e67e22;
+  color: #fff;
+}
+
+.btn-danger {
+  background: #e74c3c;
+  border: none;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+}
+
+.btn-primary {
+  background: #dfa974;
+  border: none;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #c89060;
+  color: #fff;
+}
+
+/* Separator giữa các action buttons */
+td .btn-sm + .btn-sm {
+  margin-left: 5px;
+}
+
+.btn-sm {
+  padding: 5px 15px;
+  font-size: 14px;
+}
+
+.form-select-sm {
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+/* Room Modal Styling */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1050;
+  overflow-y: auto;
+}
+
+.modal-dialog {
+  margin: 50px auto;
+  max-width: 800px;
+}
+
+.modal-content {
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #dfa974 0%, #c89060 100%);
+  color: #fff;
+  border-radius: 10px 10px 0 0;
+  padding: 20px 25px;
+  border: none;
+}
+
+.modal-header .modal-title {
+  font-family: 'Lora', serif;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.modal-body {
+  padding: 30px;
+}
+
+.modal-body .form-label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.modal-body .form-control,
+.modal-body .form-select {
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 10px 15px;
+  transition: border-color 0.3s ease;
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+  border-color: #dfa974;
+  box-shadow: 0 0 0 0.2rem rgba(223, 169, 116, 0.25);
+}
+
+.modal-footer {
+  padding: 20px 30px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.modal-footer .btn {
+  padding: 10px 30px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.modal-footer .btn-primary {
+  background: #dfa974;
+  border: none;
+}
+
+.modal-footer .btn-primary:hover {
+  background: #c89060;
+  transform: translateY(-2px);
+}
+
+.modal-footer .btn-secondary {
+  background: #6c757d;
+  border: none;
+}
+
+.modal-footer .btn-secondary:hover {
+  background: #5a6268;
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    position: relative;
+    min-height: auto;
+  }
+
+  .admin-content {
+    margin-left: 0;
+    margin-top: 0;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .sidebar-nav .nav-item {
+    flex: 1;
+    min-width: 50%;
+  }
+
+  .stat-card {
+    margin-bottom: 15px;
+  }
+}

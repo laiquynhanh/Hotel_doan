@@ -1,0 +1,46 @@
+.my-reservations-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.reservation-card {
+  transition: box-shadow 0.3s ease;
+}
+
+.reservation-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-info {
+  margin-bottom: 15px;
+}
+
+.info-row {
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.guest-info,
+.special-requests {
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+}
+
+.guest-info div,
+.special-requests div {
+  margin-bottom: 8px;
+  color: #6c757d;
+}
+
+.special-requests p {
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  margin-top: 8px;
+}

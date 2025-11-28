@@ -1,0 +1,17 @@
+.food-orders-management {
+  padding: 20px;
+}
+
+.status-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.modal.show {
+  display: block;
+}

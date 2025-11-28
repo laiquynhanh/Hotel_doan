@@ -1,0 +1,508 @@
+.my-bookings-page {
+  margin-top: 100px;
+  margin-bottom: 100px;
+  min-height: 60vh;
+}
+
+.page-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #dfa974;
+}
+
+.page-header h2 {
+  font-family: 'Lora', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #19191a;
+  margin-bottom: 10px;
+}
+
+.page-header p {
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.booking-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.booking-card:hover {
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.booking-header {
+  background: linear-gradient(135deg, #dfa974 0%, #c89960 100%);
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.booking-id {
+  color: #fff;
+}
+
+.booking-id .label {
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.booking-id .value {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Lora', serif;
+}
+
+.booking-status .badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.badge-success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.badge-info {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.badge-secondary {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.booking-body {
+  padding: 25px;
+}
+
+.booking-room-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.room-image {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.room-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.booking-card:hover .room-image img {
+  transform: scale(1.05);
+}
+
+.room-details h5 {
+  font-family: 'Lora', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #19191a;
+  margin-bottom: 5px;
+}
+
+.room-type {
+  color: #dfa974;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.room-price {
+  color: #666;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.booking-details {
+  padding: 10px 0;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 15px;
+  padding: 8px;
+  border-left: 3px solid #dfa974;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-row i {
+  color: #dfa974;
+  font-size: 16px;
+  width: 20px;
+  margin-top: 2px;
+}
+
+.detail-row strong {
+  color: #19191a;
+  margin-right: 5px;
+}
+
+.booking-user-info {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.booking-user-info h6 {
+  font-family: 'Lora', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #19191a;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #dfa974;
+}
+
+.user-detail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.user-detail:last-child {
+  margin-bottom: 0;
+}
+
+.user-detail i {
+  color: #dfa974;
+  width: 18px;
+  text-align: center;
+}
+
+.booking-total {
+  background: linear-gradient(135deg, #19191a 0%, #2c2c2c 100%);
+  padding: 15px 20px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.total-label {
+  color: #dfa974;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.total-amount {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'Lora', serif;
+}
+
+.btn-cancel {
+  width: 100%;
+  padding: 12px;
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-cancel:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn-cancel i {
+  font-size: 16px;
+}
+
+/* VNPay pay button style - match FE theme (dark gradient similar to total box) */
+.booking-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-pay-vnpay {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #19191a 0%, #2c2c2c 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-pay-vnpay:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.btn-pay-vnpay[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.alert {
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+}
+
+.alert i {
+  margin-right: 10px;
+}
+
+.alert-link {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Responsive */
+/* Dịch vụ kèm theo */
+.booking-services {
+  border-top: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+.services-toggle {
+  width: 100%;
+  padding: 15px 25px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+  color: #19191a;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.services-toggle:hover {
+  background: #e9ecef;
+  color: #dfa974;
+}
+
+.services-toggle i {
+  color: #dfa974;
+  font-size: 18px;
+}
+
+.services-content {
+  padding: 20px 25px;
+  border-top: 1px solid #e0e0e0;
+  background: #fff;
+}
+
+.no-services {
+  text-align: center;
+  padding: 30px;
+  color: #999;
+  font-size: 15px;
+}
+
+.no-services i {
+  display: block;
+  font-size: 40px;
+  margin-bottom: 10px;
+  color: #ddd;
+}
+
+.service-section {
+  margin-bottom: 25px;
+}
+
+.service-section:last-child {
+  margin-bottom: 0;
+}
+
+.service-section h6 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #19191a;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #dfa974;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.service-section h6 i {
+  color: #dfa974;
+}
+
+.service-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.service-item {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.service-item:hover {
+  border-color: #dfa974;
+  box-shadow: 0 2px 8px rgba(223, 169, 116, 0.1);
+}
+
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.service-id {
+  font-weight: 700;
+  color: #19191a;
+  font-size: 14px;
+}
+
+.service-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: #555;
+}
+
+.service-details div {
+  display: flex;
+  gap: 8px;
+}
+
+.service-details strong {
+  min-width: 80px;
+  color: #19191a;
+}
+
+.badge-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .my-bookings-page {
+    margin-top: 80px;
+  }
+
+  .page-header h2 {
+    font-size: 28px;
+  }
+
+  .booking-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .booking-body {
+    padding: 15px;
+  }
+
+  .booking-room-info {
+    margin-bottom: 20px;
+  }
+
+  .booking-details {
+    margin-bottom: 20px;
+  }
+
+  .detail-row {
+    font-size: 14px;
+  }
+
+  .total-amount {
+    font-size: 20px;
+  }
+
+  .services-toggle {
+    font-size: 14px;
+    padding: 12px 15px;
+  }
+
+  .services-content {
+    padding: 15px;
+  }
+
+  .service-section h6 {
+    font-size: 14px;
+  }
+
+  .service-details {
+    font-size: 13px;
+  }
+}

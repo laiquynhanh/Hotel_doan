@@ -1,0 +1,8 @@
+rootProject.name = 'BE_hotel'
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        google()
+    }
+}

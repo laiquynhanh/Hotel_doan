@@ -1,0 +1,63 @@
+.my-food-orders-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.order-card {
+  transition: box-shadow 0.3s ease;
+}
+
+.order-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.order-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.order-items-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-items-list li:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.item-quantity {
+  color: #6c757d;
+  margin: 0 15px;
+}
+
+.item-price {
+  font-weight: bold;
+  color: #0d6efd;
+  min-width: 100px;
+  text-align: right;
+}
+
+.order-details {
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+}
+
+.order-details div {
+  margin-bottom: 8px;
+  color: #6c757d;
+}
+
+.order-total {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
