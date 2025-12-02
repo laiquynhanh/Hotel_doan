@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { roomService } from '../services/room.service';
 import { bookingService } from '../services/booking.service';
 import { paymentService } from '../services/payment.service';
+import { couponService } from '../services/coupon.service';
 import type { Room } from '../types/room.types';
 import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '../utils/currency';
@@ -29,6 +30,13 @@ const BookingPage = () => {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingError, setBookingError] = useState('');
   const [selectedDepositPercent, setSelectedDepositPercent] = useState<number>(30);
+  
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [discount, setDiscount] = useState(0);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponError, setCouponError] = useState('');
 
   useEffect(() => {
     // Auto search if params exist
@@ -90,7 +98,49 @@ const BookingPage = () => {
   };
 
   const calculateTotalPrice = (pricePerNight: number) => {
+    const total = calculateNights() * pricePerNight;
+    return couponApplied ? total - discount : total;
+  };
+
+  const calculateOriginalPrice = (pricePerNight: number) => {
     return calculateNights() * pricePerNight;
+  };
+
+  const applyCoupon = async () => {
+    if (!selectedRoom || !couponCode.trim()) {
+      setCouponError('Vui lòng nhập mã giảm giá');
+      return;
+    }
+
+    try {
+      setCouponLoading(true);
+      setCouponError('');
+      const originalPrice = calculateOriginalPrice(selectedRoom.pricePerNight);
+      const result = await couponService.validateCoupon(couponCode.trim(), originalPrice);
+      
+      if (result.valid) {
+        setDiscount(result.discount);
+        setCouponApplied(true);
+        setCouponError('');
+      } else {
+        setCouponError(result.message || 'Mã giảm giá không hợp lệ');
+        setCouponApplied(false);
+        setDiscount(0);
+      }
+    } catch (error: any) {
+      setCouponError(error?.response?.data?.message || 'Lỗi khi áp dụng mã giảm giá');
+      setCouponApplied(false);
+      setDiscount(0);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCouponCode('');
+    setCouponApplied(false);
+    setDiscount(0);
+    setCouponError('');
   };
 
   const handleBookRoom = async (room: Room) => {
@@ -131,7 +181,8 @@ const BookingPage = () => {
         checkInDate,
         checkOutDate,
         numberOfGuests: guests,
-        specialRequests: specialRequests || undefined
+        specialRequests: specialRequests || undefined,
+        couponCode: couponApplied ? couponCode : undefined
       });
 
       console.debug('[BookingPage] created booking:', booking);
@@ -383,12 +434,62 @@ const BookingPage = () => {
                     <span>Số khách:</span>
                     <strong>{guests} người</strong>
                   </div>
+                  {couponApplied && discount > 0 && (
+                    <>
+                      <div className="info-row">
+                        <span>Giá gốc:</span>
+                        <span style={{ textDecoration: 'line-through', color: '#999' }}>
+                          {formatPrice(calculateOriginalPrice(selectedRoom.pricePerNight))}
+                        </span>
+                      </div>
+                      <div className="info-row">
+                        <span>Giảm giá ({couponCode}):</span>
+                        <span className="text-success">-{formatPrice(discount)}</span>
+                      </div>
+                    </>
+                  )}
                   <div className="info-row total">
                     <span>Tổng tiền:</span>
                     <strong className="text-primary">
                       {formatPrice(calculateTotalPrice(selectedRoom.pricePerNight))}
                     </strong>
                   </div>
+                </div>
+
+                <div className="form-group mt-3">
+                  <label>Mã giảm giá (tùy chọn)</label>
+                  <div className="d-flex gap-2">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Nhập mã giảm giá"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      disabled={couponApplied}
+                    />
+                    {!couponApplied ? (
+                      <button 
+                        className="btn btn-outline-primary" 
+                        onClick={applyCoupon}
+                        disabled={couponLoading || !couponCode.trim()}
+                      >
+                        {couponLoading ? 'Đang kiểm tra...' : 'Áp dụng'}
+                      </button>
+                    ) : (
+                      <button 
+                        className="btn btn-outline-danger" 
+                        onClick={removeCoupon}
+                      >
+                        Hủy
+                      </button>
+                    )}
+                  </div>
+                  {couponError && (
+                    <small className="text-danger d-block mt-1">{couponError}</small>
+                  )}
+                  {couponApplied && (
+                    <small className="text-success d-block mt-1">✓ Mã giảm giá đã được áp dụng</small>
+                  )}
                 </div>
 
                 <div className="form-group mt-3">

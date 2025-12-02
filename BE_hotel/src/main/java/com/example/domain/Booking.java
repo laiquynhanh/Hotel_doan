@@ -1,9 +1,20 @@
 package com.example.domain;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "bookings")
@@ -38,6 +49,26 @@ public class Booking {
 
     @Column(length = 500)
     private String specialRequests;
+
+    // Premium Services
+    @Column(name = "airport_pickup")
+    private Boolean airportPickup = false;
+
+    @Column(name = "spa_service")
+    private Boolean spaService = false;
+
+    @Column(name = "laundry_service")
+    private Boolean laundryService = false;
+
+    @Column(name = "tour_guide")
+    private Boolean tourGuide = false;
+
+    // Coupon fields
+    @Column(name = "coupon_code", length = 50)
+    private String couponCode;
+
+    @Column(name = "discount_amount")
+    private BigDecimal discountAmount = BigDecimal.ZERO;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -115,6 +146,54 @@ public class Booking {
 
     public void setSpecialRequests(String specialRequests) {
         this.specialRequests = specialRequests;
+    }
+
+    public Boolean getAirportPickup() {
+        return airportPickup;
+    }
+
+    public void setAirportPickup(Boolean airportPickup) {
+        this.airportPickup = airportPickup;
+    }
+
+    public Boolean getSpaService() {
+        return spaService;
+    }
+
+    public void setSpaService(Boolean spaService) {
+        this.spaService = spaService;
+    }
+
+    public Boolean getLaundryService() {
+        return laundryService;
+    }
+
+    public void setLaundryService(Boolean laundryService) {
+        this.laundryService = laundryService;
+    }
+
+    public Boolean getTourGuide() {
+        return tourGuide;
+    }
+
+    public void setTourGuide(Boolean tourGuide) {
+        this.tourGuide = tourGuide;
+    }
+
+    public String getCouponCode() {
+        return couponCode;
+    }
+
+    public void setCouponCode(String couponCode) {
+        this.couponCode = couponCode;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public LocalDateTime getCreatedAt() {

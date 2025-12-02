@@ -89,6 +89,7 @@ const BookingManagement = () => {
               <th>Ngày Trả</th>
               <th>Số Khách</th>
               <th>Tổng Tiền</th>
+              <th>Dịch Vụ Premium</th>
               <th>Trạng Thái</th>
               <th>Hành Động</th>
             </tr>
@@ -116,6 +117,14 @@ const BookingManagement = () => {
                 <td>{booking.checkOutDate}</td>
                 <td>{booking.numberOfGuests}</td>
                 <td>{booking.totalPrice.toLocaleString('vi-VN')} VNĐ</td>
+                <td>
+                  <div style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+                    <div>🚗 Đưa đón: <strong>{booking.airportPickup ? '✓' : '✗'}</strong></div>
+                    <div>💆 Spa: <strong>{booking.spaService ? '✓' : '✗'}</strong></div>
+                    <div>👔 Giặt ủi: <strong>{booking.laundryService ? '✓' : '✗'}</strong></div>
+                    <div>🗺️ HDV: <strong>{booking.tourGuide ? '✓' : '✗'}</strong></div>
+                  </div>
+                </td>
                 <td>
                   <select
                     className="form-select form-select-sm"

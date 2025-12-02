@@ -1,0 +1,58 @@
+.coupon-management {
+  padding: 20px;
+}
+
+.coupon-management h2 {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.coupon-management .table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.coupon-management .table thead {
+  background: linear-gradient(135deg, #dfa974 0%, #c89961 100%);
+  color: white;
+}
+
+.coupon-management .table thead th {
+  border: none;
+  padding: 15px;
+  font-weight: 600;
+}
+
+.coupon-management .table tbody td {
+  padding: 12px 15px;
+  vertical-align: middle;
+}
+
+.coupon-management .badge {
+  padding: 5px 10px;
+  font-size: 0.85rem;
+}
+
+.coupon-management .modal-content {
+  border-radius: 15px;
+  border: none;
+}
+
+.coupon-management .modal-header {
+  background: linear-gradient(135deg, #dfa974 0%, #c89961 100%);
+  color: white;
+  border-radius: 15px 15px 0 0;
+}
+
+.coupon-management .modal-header .btn-close {
+  filter: invert(1);
+}
+
+.coupon-management .form-label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}

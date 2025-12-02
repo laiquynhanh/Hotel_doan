@@ -33,6 +33,9 @@ public class BookingService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private com.example.services.CouponService couponService;
+
     public List<BookingDTO> getAllBookings() {
         return bookingRepository.findAll().stream()
                 .map(this::convertToDTO)
@@ -94,6 +97,21 @@ public class BookingService {
         long nights = ChronoUnit.DAYS.between(bookingDTO.getCheckInDate(), bookingDTO.getCheckOutDate());
         BigDecimal totalPrice = room.getPricePerNight().multiply(BigDecimal.valueOf(nights));
 
+        // Apply coupon if provided
+        BigDecimal discountAmount = BigDecimal.ZERO;
+        String couponCode = bookingDTO.getCouponCode();
+        if (couponCode != null && !couponCode.trim().isEmpty()) {
+            try {
+                discountAmount = couponService.calculateDiscount(couponCode, totalPrice);
+                totalPrice = totalPrice.subtract(discountAmount);
+            } catch (Exception e) {
+                // If coupon is invalid, ignore it (or throw error if strict validation required)
+                // For now, we'll just ignore and proceed without discount
+                couponCode = null;
+                discountAmount = BigDecimal.ZERO;
+            }
+        }
+
         // Create booking
         Booking booking = new Booking();
         booking.setUser(user);
@@ -104,6 +122,8 @@ public class BookingService {
         booking.setTotalPrice(totalPrice);
         booking.setStatus(BookingStatus.PENDING);
         booking.setSpecialRequests(bookingDTO.getSpecialRequests());
+        booking.setCouponCode(couponCode);
+        booking.setDiscountAmount(discountAmount);
 
         Booking savedBooking = bookingRepository.save(booking);
         return convertToDTO(savedBooking);
@@ -114,6 +134,27 @@ public class BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.setStatus(status);
+        Booking updatedBooking = bookingRepository.save(booking);
+        return convertToDTO(updatedBooking);
+    }
+
+    public BookingDTO updatePremiumServices(Long id, Boolean airportPickup, Boolean spaService, Boolean laundryService, Boolean tourGuide) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (airportPickup != null) {
+            booking.setAirportPickup(airportPickup);
+        }
+        if (spaService != null) {
+            booking.setSpaService(spaService);
+        }
+        if (laundryService != null) {
+            booking.setLaundryService(laundryService);
+        }
+        if (tourGuide != null) {
+            booking.setTourGuide(tourGuide);
+        }
+
         Booking updatedBooking = bookingRepository.save(booking);
         return convertToDTO(updatedBooking);
     }
@@ -149,6 +190,12 @@ public class BookingService {
         dto.setTotalPrice(booking.getTotalPrice());
         dto.setStatus(booking.getStatus());
         dto.setSpecialRequests(booking.getSpecialRequests());
+        dto.setAirportPickup(booking.getAirportPickup());
+        dto.setSpaService(booking.getSpaService());
+        dto.setLaundryService(booking.getLaundryService());
+        dto.setTourGuide(booking.getTourGuide());
+        dto.setCouponCode(booking.getCouponCode());
+        dto.setDiscountAmount(booking.getDiscountAmount());
         dto.setCreatedAt(booking.getCreatedAt());
         return dto;
     }

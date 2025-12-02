@@ -35,6 +35,8 @@ const FoodMenuManagement = lazy(() => import('./pages/admin/FoodMenuManagement')
 const FoodOrdersManagement = lazy(() => import('./pages/admin/FoodOrdersManagement'));
 const RestaurantTablesManagement = lazy(() => import('./pages/admin/RestaurantTablesManagement'));
 const TableReservationsManagement = lazy(() => import('./pages/admin/TableReservationsManagement'));
+const CouponManagement = lazy(() => import('./pages/admin/CouponManagement'));
+const ReviewManagement = lazy(() => import('./pages/admin/ReviewManagement'));
 import './App.css';
 
 // Loading component
@@ -89,6 +91,9 @@ function App() {
               <Route path="food-orders" element={<FoodOrdersManagement />} />
               <Route path="restaurant-tables" element={<RestaurantTablesManagement />} />
               <Route path="table-reservations" element={<TableReservationsManagement />} />
+              {/* Coupon & Review Management */}
+              <Route path="coupons" element={<CouponManagement />} />
+              <Route path="reviews" element={<ReviewManagement />} />
             </Route>
             </Routes>
           </Suspense>

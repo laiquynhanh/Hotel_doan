@@ -24,5 +24,25 @@ export const bookingService = {
   cancelBooking: async (id: number): Promise<Booking> => {
     const response = await api.delete(`/bookings/${id}`);
     return response.data;
+  },
+
+  // Cập nhật dịch vụ premium
+  updatePremiumServices: async (
+    id: number, 
+    services: {
+      airportPickup?: boolean;
+      spaService?: boolean;
+      laundryService?: boolean;
+      tourGuide?: boolean;
+    }
+  ): Promise<Booking> => {
+    const params = new URLSearchParams();
+    if (services.airportPickup !== undefined) params.append('airportPickup', String(services.airportPickup));
+    if (services.spaService !== undefined) params.append('spaService', String(services.spaService));
+    if (services.laundryService !== undefined) params.append('laundryService', String(services.laundryService));
+    if (services.tourGuide !== undefined) params.append('tourGuide', String(services.tourGuide));
+    
+    const response = await api.put(`/bookings/${id}/premium-services?${params.toString()}`);
+    return response.data;
   }
 };

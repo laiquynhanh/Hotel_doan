@@ -48,4 +48,5 @@ export interface BookingCreateRequest {
   checkOutDate: string;
   numberOfGuests: number;
   specialRequests?: string;
+  couponCode?: string;
 }

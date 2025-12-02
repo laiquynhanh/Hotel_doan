@@ -92,6 +92,23 @@ const AdminLayout = () => {
                 <span>Đặt Bàn</span>
               </NavLink>
               
+              <div className="nav-divider"></div>
+              
+              <NavLink 
+                to="/admin/coupons" 
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              >
+                <i className="fa fa-ticket"></i>
+                <span>Mã Giảm Giá</span>
+              </NavLink>
+              <NavLink 
+                to="/admin/reviews" 
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              >
+                <i className="fa fa-star"></i>
+                <span>Đánh Giá</span>
+              </NavLink>
+              
               <button className="nav-item" onClick={handleLogout}>
                 <i className="fa fa-sign-out"></i>
                 <span>Đăng Xuất</span>

@@ -8,6 +8,7 @@ public class BookingCreateDTO {
     private LocalDate checkOutDate;
     private Integer numberOfGuests;
     private String specialRequests;
+    private String couponCode;
 
     public BookingCreateDTO() {
     }
@@ -27,4 +28,7 @@ public class BookingCreateDTO {
 
     public String getSpecialRequests() { return specialRequests; }
     public void setSpecialRequests(String specialRequests) { this.specialRequests = specialRequests; }
+
+    public String getCouponCode() { return couponCode; }
+    public void setCouponCode(String couponCode) { this.couponCode = couponCode; }
 }

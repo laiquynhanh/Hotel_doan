@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { paymentService } from '../services/payment.service';
+import { bookingService } from '../services/booking.service';
 import { foodService } from '../services/food.service';
 import { restaurantService } from '../services/restaurant.service';
 import type { FoodItem, FoodOrderItem } from '../types/food.types';
@@ -38,6 +39,9 @@ const PaymentResult = () => {
     laundry: false,
     tour_guide: false
   });
+  const [showPremiumConfirm, setShowPremiumConfirm] = useState(false);
+  const [pendingServiceChange, setPendingServiceChange] = useState<{service: string, value: boolean} | null>(null);
+  const [bookingId, setBookingId] = useState<number | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -48,6 +52,11 @@ const PaymentResult = () => {
         if (result.isValid && result.responseCode === '00') {
           setStatus('success');
           setMessage('Thanh toán thành công!');
+          
+          // Save booking ID for premium services update
+          if (result.bookingId) {
+            setBookingId(result.bookingId);
+          }
           
           // Load food items and restaurant tables for additional services
           loadFoodItems();
@@ -169,6 +178,58 @@ const PaymentResult = () => {
     } finally {
       setRestaurantLoading(false);
     }
+  };
+
+  // Premium Service Handlers
+  const handlePremiumServiceClick = (service: string, currentValue: boolean) => {
+    setPendingServiceChange({ service, value: !currentValue });
+    setShowPremiumConfirm(true);
+  };
+
+  const confirmPremiumService = async () => {
+    if (pendingServiceChange && bookingId) {
+      try {
+        // Update local state
+        setAdditionalServices({
+          ...additionalServices,
+          [pendingServiceChange.service]: pendingServiceChange.value
+        });
+        
+        // Map service name to API parameter
+        const serviceMapping: Record<string, string> = {
+          airport_pickup: 'airportPickup',
+          spa: 'spaService',
+          laundry: 'laundryService',
+          tour_guide: 'tourGuide'
+        };
+        
+        // Call API to save to database
+        const updateData: any = {};
+        updateData[serviceMapping[pendingServiceChange.service]] = pendingServiceChange.value;
+        
+        await bookingService.updatePremiumServices(bookingId, updateData);
+        
+        if (pendingServiceChange.value) {
+          const serviceNames: Record<string, string> = {
+            airport_pickup: 'Đưa đón sân bay',
+            spa: 'Dịch vụ Spa',
+            laundry: 'Giặt ủi',
+            tour_guide: 'Hướng dẫn viên'
+          };
+          toast.success(`Đã thêm dịch vụ ${serviceNames[pendingServiceChange.service]}. Admin sẽ liên hệ với bạn trong 30 phút.`);
+        }
+      } catch (error) {
+        toast.error('Không thể cập nhật dịch vụ. Vui lòng thử lại.');
+        console.error('Error updating premium service:', error);
+      }
+    }
+    setShowPremiumConfirm(false);
+    setPendingServiceChange(null);
+  };
+
+  const cancelPremiumService = () => {
+    setShowPremiumConfirm(false);
+    setPendingServiceChange(null);
   };
 
   return (
@@ -681,10 +742,7 @@ const PaymentResult = () => {
                           background: additionalServices.airport_pickup ? 'rgba(223, 169, 116, 0.1)' : 'white',
                           height: '100%'
                         }}
-                        onClick={() => setAdditionalServices({
-                          ...additionalServices,
-                          airport_pickup: !additionalServices.airport_pickup
-                        })}
+                        onClick={() => handlePremiumServiceClick('airport_pickup', additionalServices.airport_pickup)}
                         onMouseOver={(e) => {
                           if (!additionalServices.airport_pickup) {
                             e.currentTarget.style.borderColor = '#dfa974';
@@ -732,10 +790,7 @@ const PaymentResult = () => {
                           background: additionalServices.spa ? 'rgba(44, 62, 80, 0.1)' : 'white',
                           height: '100%'
                         }}
-                        onClick={() => setAdditionalServices({
-                          ...additionalServices,
-                          spa: !additionalServices.spa
-                        })}
+                        onClick={() => handlePremiumServiceClick('spa', additionalServices.spa)}
                         onMouseOver={(e) => {
                           if (!additionalServices.spa) {
                             e.currentTarget.style.borderColor = '#4facfe';
@@ -783,10 +838,7 @@ const PaymentResult = () => {
                           background: additionalServices.laundry ? 'rgba(223, 169, 116, 0.1)' : 'white',
                           height: '100%'
                         }}
-                        onClick={() => setAdditionalServices({
-                          ...additionalServices,
-                          laundry: !additionalServices.laundry
-                        })}
+                        onClick={() => handlePremiumServiceClick('laundry', additionalServices.laundry)}
                         onMouseOver={(e) => {
                           if (!additionalServices.laundry) {
                             e.currentTarget.style.borderColor = '#11998e';
@@ -834,10 +886,7 @@ const PaymentResult = () => {
                           background: additionalServices.tour_guide ? 'rgba(44, 62, 80, 0.1)' : 'white',
                           height: '100%'
                         }}
-                        onClick={() => setAdditionalServices({
-                          ...additionalServices,
-                          tour_guide: !additionalServices.tour_guide
-                        })}
+                        onClick={() => handlePremiumServiceClick('tour_guide', additionalServices.tour_guide)}
                         onMouseOver={(e) => {
                           if (!additionalServices.tour_guide) {
                             e.currentTarget.style.borderColor = '#f093fb';
@@ -924,6 +973,121 @@ const PaymentResult = () => {
             <button className="btn btn-secondary" onClick={() => navigate('/booking')}>Quay lại đặt phòng</button>
           </div>
         </>
+      )}
+
+      {/* Confirmation Modal for Premium Services */}
+      {showPremiumConfirm && pendingServiceChange && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '20px'
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '20px',
+            padding: '40px',
+            maxWidth: '500px',
+            width: '100%',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+            animation: 'slideIn 0.3s ease'
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                background: 'linear-gradient(135deg, #dfa974 0%, #c89961 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 20px',
+                fontSize: '40px'
+              }}>
+                {pendingServiceChange.service === 'airport_pickup' && '🚗'}
+                {pendingServiceChange.service === 'spa' && '💆'}
+                {pendingServiceChange.service === 'laundry' && '👔'}
+                {pendingServiceChange.service === 'tour_guide' && '🗺️'}
+              </div>
+              <h4 style={{ color: '#2c3e50', marginBottom: '15px', fontWeight: '700' }}>
+                {pendingServiceChange.value ? 'Xác nhận đặt dịch vụ' : 'Hủy dịch vụ'}
+              </h4>
+              <p style={{ color: '#6c757d', fontSize: '1rem', lineHeight: '1.6' }}>
+                {pendingServiceChange.value ? (
+                  <>
+                    Bạn có chắc chắn muốn đặt dịch vụ <strong>
+                      {pendingServiceChange.service === 'airport_pickup' && 'Đưa đón sân bay'}
+                      {pendingServiceChange.service === 'spa' && 'Spa'}
+                      {pendingServiceChange.service === 'laundry' && 'Giặt ủi'}
+                      {pendingServiceChange.service === 'tour_guide' && 'Hướng dẫn viên'}
+                    </strong>?<br/><br/>
+                    <span style={{ color: '#dfa974', fontWeight: '600' }}>
+                      Đội ngũ chăm sóc khách hàng sẽ liên hệ với bạn trong vòng 30 phút để xác nhận.
+                    </span>
+                  </>
+                ) : (
+                  <>Bạn có chắc chắn muốn hủy dịch vụ này không?</>
+                )}
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+              <button
+                onClick={cancelPremiumService}
+                style={{
+                  padding: '12px 30px',
+                  background: '#e9ecef',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: '#6c757d',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = '#dee2e6';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = '#e9ecef';
+                }}
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmPremiumService}
+                style={{
+                  padding: '12px 30px',
+                  background: 'linear-gradient(135deg, #dfa974 0%, #c89961 100%)',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 15px rgba(223, 169, 116, 0.3)'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(223, 169, 116, 0.4)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 15px rgba(223, 169, 116, 0.3)';
+                }}
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

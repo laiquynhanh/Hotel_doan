@@ -5,6 +5,7 @@ import { bookingService } from '../services/booking.service';
 import { paymentService } from '../services/payment.service';
 import { foodService } from '../services/food.service';
 import { restaurantService } from '../services/restaurant.service';
+import { couponService } from '../services/coupon.service';
 import type { Room, RoomType } from '../types/room.types';
 import type { FoodItem, FoodOrderItem } from '../types/food.types';
 import type { RestaurantTable } from '../types/restaurant.types';
@@ -29,6 +30,13 @@ const RoomDetailsPage = () => {
   const [bookingError, setBookingError] = useState('');
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [selectedDepositPercent, setSelectedDepositPercent] = useState<number>(30);
+
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [discount, setDiscount] = useState(0);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponError, setCouponError] = useState('');
 
   // Removed checkout services modal - services now ordered AFTER payment
 
@@ -150,7 +158,7 @@ const RoomDetailsPage = () => {
     return amenities.split(',').map(a => a.trim());
   };
 
-  const calculateTotalPrice = (): number => {
+  const calculateOriginalPrice = (): number => {
     if (!checkInDate || !checkOutDate || !room) return 0;
     
     const start = new Date(checkInDate);
@@ -158,6 +166,53 @@ const RoomDetailsPage = () => {
     const nights = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
     
     return nights > 0 ? nights * room.pricePerNight : 0;
+  };
+
+  const calculateTotalPrice = (): number => {
+    const originalPrice = calculateOriginalPrice();
+    return couponApplied ? originalPrice - discount : originalPrice;
+  };
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponError('Vui lòng nhập mã giảm giá');
+      return;
+    }
+
+    const originalPrice = calculateOriginalPrice();
+    if (originalPrice <= 0) {
+      setCouponError('Vui lòng chọn ngày nhận và trả phòng trước');
+      return;
+    }
+
+    try {
+      setCouponLoading(true);
+      setCouponError('');
+      const result = await couponService.validateCoupon(couponCode.trim(), originalPrice);
+      
+      if (result.valid) {
+        setDiscount(result.discount);
+        setCouponApplied(true);
+        setCouponError('');
+      } else {
+        setCouponError(result.message || 'Mã giảm giá không hợp lệ');
+        setCouponApplied(false);
+        setDiscount(0);
+      }
+    } catch (error: any) {
+      setCouponError(error?.response?.data?.message || 'Lỗi khi áp dụng mã giảm giá');
+      setCouponApplied(false);
+      setDiscount(0);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCouponCode('');
+    setCouponApplied(false);
+    setDiscount(0);
+    setCouponError('');
   };
 
   // Handle adding food item to order
@@ -346,7 +401,8 @@ const RoomDetailsPage = () => {
         checkInDate,
         checkOutDate,
         numberOfGuests,
-        specialRequests: specialRequests || undefined
+        specialRequests: specialRequests || undefined,
+        couponCode: couponApplied ? couponCode : undefined
       });
 
       setBookingSuccess(true);
@@ -442,7 +498,8 @@ const RoomDetailsPage = () => {
         checkInDate,
         checkOutDate,
         numberOfGuests,
-        specialRequests: specialRequests || undefined
+        specialRequests: specialRequests || undefined,
+        couponCode: couponApplied ? couponCode : undefined
       };
 
       const created = await bookingService.createBooking(bookingData);
@@ -681,6 +738,49 @@ const RoomDetailsPage = () => {
                       placeholder="Ví dụ: Giường thêm, tầng cao, view biển..."
                     ></textarea>
                   </div>
+
+                  {/* Coupon Input */}
+                  <div className="coupon-section" style={{ marginTop: '15px' }}>
+                    <label htmlFor="coupon-code">Mã Giảm Giá (Tùy chọn):</label>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <input
+                        id="coupon-code"
+                        type="text"
+                        className="form-control"
+                        placeholder="Nhập mã giảm giá"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        disabled={couponApplied}
+                        style={{ flex: 1 }}
+                      />
+                      {!couponApplied ? (
+                        <button 
+                          type="button"
+                          className="btn btn-outline-primary" 
+                          onClick={applyCoupon}
+                          disabled={couponLoading || !couponCode.trim()}
+                          style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}
+                        >
+                          {couponLoading ? 'Kiểm tra...' : 'Áp dụng'}
+                        </button>
+                      ) : (
+                        <button 
+                          type="button"
+                          className="btn btn-outline-danger" 
+                          onClick={removeCoupon}
+                          style={{ padding: '8px 16px' }}
+                        >
+                          Hủy
+                        </button>
+                      )}
+                    </div>
+                    {couponError && (
+                      <small style={{ color: '#dc3545', display: 'block', marginTop: '5px' }}>{couponError}</small>
+                    )}
+                    {couponApplied && (
+                      <small style={{ color: '#28a745', display: 'block', marginTop: '5px' }}>✓ Mã giảm giá đã được áp dụng</small>
+                    )}
+                  </div>
                   
                   {checkInDate && checkOutDate && (
                     <div className="booking-summary">
@@ -692,6 +792,20 @@ const RoomDetailsPage = () => {
                         <span>Giá/đêm:</span>
                         <span>{formatPrice(room?.pricePerNight || 0)}</span>
                       </div>
+                      {couponApplied && discount > 0 && (
+                        <>
+                          <div className="summary-item">
+                            <span>Giá gốc:</span>
+                            <span style={{ textDecoration: 'line-through', color: '#999' }}>
+                              {formatPrice(calculateOriginalPrice())}
+                            </span>
+                          </div>
+                          <div className="summary-item">
+                            <span>Giảm giá ({couponCode}):</span>
+                            <span style={{ color: '#28a745' }}>-{formatPrice(discount)}</span>
+                          </div>
+                        </>
+                      )}
                       <div className="summary-item total">
                         <span>Tổng tiền:</span>
                         <span className="total-price">{formatPrice(calculateTotalPrice())}</span>

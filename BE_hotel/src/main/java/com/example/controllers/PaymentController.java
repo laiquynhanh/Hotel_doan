@@ -121,6 +121,8 @@ public class PaymentController {
                 return ResponseEntity.ok(resp);
             }
 
+            Booking booking = payment.getBooking();
+            
             if ("00".equals(responseCode)) {
                 // Idempotency: if payment already marked SUCCESS, skip re-processing (avoid duplicate emails/updates)
                 if (payment.getStatus() == PaymentStatus.SUCCESS) {
@@ -133,7 +135,6 @@ public class PaymentController {
                     payment.setCardType(params.get("vnp_CardType"));
                     paymentRepository.save(payment);
 
-                    Booking booking = payment.getBooking();
                     booking.setStatus(com.example.domain.BookingStatus.CONFIRMED);
                     bookingRepository.save(booking);
 
@@ -150,6 +151,7 @@ public class PaymentController {
                     resp.put("status", "SUCCESS");
                     resp.put("message", "Thanh toán thành công!");
                 }
+                resp.put("bookingId", booking.getId());
             } else {
                 payment.setStatus(PaymentStatus.FAILED);
                 paymentRepository.save(payment);

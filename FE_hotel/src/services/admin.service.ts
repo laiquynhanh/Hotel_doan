@@ -15,6 +15,10 @@ export interface AdminBookingDTO {
   totalPrice: number;
   status: BookingStatus;
   specialRequests?: string;
+  airportPickup?: boolean;
+  spaService?: boolean;
+  laundryService?: boolean;
+  tourGuide?: boolean;
   createdAt: string;
 }
 
@@ -155,5 +159,50 @@ export const adminService = {
 
   cancelReservation: async (id: number): Promise<void> => {
     await api.delete(`/admin/restaurant/reservations/${id}`);
+  },
+
+  // Coupon Management
+  getAllCoupons: async () => {
+    const response = await api.get('/admin/coupons');
+    return response.data;
+  },
+
+  createCoupon: async (data: any) => {
+    const response = await api.post('/admin/coupons', data);
+    return response.data;
+  },
+
+  updateCoupon: async (id: number, data: any) => {
+    const response = await api.put(`/admin/coupons/${id}`, data);
+    return response.data;
+  },
+
+  deleteCoupon: async (id: number) => {
+    await api.delete(`/admin/coupons/${id}`);
+  },
+
+  // Review Management
+  getAllReviews: async () => {
+    const response = await api.get('/admin/reviews');
+    return response.data;
+  },
+
+  getPendingReviews: async () => {
+    const response = await api.get('/admin/reviews/pending');
+    return response.data;
+  },
+
+  approveReview: async (id: number) => {
+    const response = await api.put(`/admin/reviews/${id}/approve`);
+    return response.data;
+  },
+
+  respondToReview: async (id: number, response: string) => {
+    const res = await api.put(`/admin/reviews/${id}/respond`, { response });
+    return res.data;
+  },
+
+  deleteReview: async (id: number) => {
+    await api.delete(`/admin/reviews/${id}`);
   }
 };
