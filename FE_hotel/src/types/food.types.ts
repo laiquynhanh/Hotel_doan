@@ -35,6 +35,7 @@ export interface FoodOrderItem {
 }
 
 export interface FoodOrderCreate {
+  bookingId?: number;
   roomNumber?: string;
   items: FoodOrderItem[];
   specialInstructions?: string;
@@ -44,6 +45,7 @@ export interface FoodOrder {
   id: number;
   userId: number;
   userName: string;
+  bookingId?: number;
   roomNumber?: string;
   orderTime: string; // ISO datetime string
   deliveryTime?: string; // ISO datetime string

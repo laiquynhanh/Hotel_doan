@@ -77,16 +77,12 @@ const MyBookingsPage = () => {
   };
 
   const getBookingServices = (bookingId: number) => {
-    const orders = foodOrders.filter(o => o.roomNumber && bookings.find(b => b.bookingId === bookingId && b.roomNumber === o.roomNumber));
-    const reservs = reservations.filter(r => {
-      // Match by date range or other criteria
-      const booking = bookings.find(b => b.bookingId === bookingId);
-      if (!booking) return false;
-      const reservDate = new Date(r.reservationDate);
-      const checkIn = new Date(booking.checkInDate);
-      const checkOut = new Date(booking.checkOutDate);
-      return reservDate >= checkIn && reservDate <= checkOut;
-    });
+    // Filter food orders by bookingId - only show orders linked to THIS specific booking
+    const orders = foodOrders.filter(o => o.bookingId === bookingId);
+    
+    // Filter restaurant reservations by bookingId - only show reservations linked to THIS specific booking
+    const reservs = reservations.filter(r => r.bookingId === bookingId);
+    
     return { orders, reservs };
   };
 

@@ -28,8 +28,9 @@ export const foodService = {
 
   // Tạo đơn room service
   createFoodOrder: async (orderData: FoodOrderCreate): Promise<FoodOrder> => {
-    // Send only fields required by backend DTO; price is derived server-side
+    // Send fields required by backend DTO
     const payload = {
+      bookingId: orderData.bookingId,
       roomNumber: orderData.roomNumber || undefined,
       specialInstructions: orderData.specialInstructions || undefined,
       items: orderData.items.map(i => ({

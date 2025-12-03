@@ -16,6 +16,7 @@ const RoomServicePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [roomNumber, setRoomNumber] = useState('');
+  const [bookingId, setBookingId] = useState<number | null>(null);
   const [specialInstructions, setSpecialInstructions] = useState('');
 
   const categories = [
@@ -40,12 +41,17 @@ const RoomServicePage = () => {
   const loadUserBooking = async () => {
     try {
       const bookings = await bookingService.getMyBookings();
-      // Find active booking (CONFIRMED or CHECKED_IN)
-      const activeBooking = bookings.find(
+      // Find active bookings (CONFIRMED or CHECKED_IN) and get the NEWEST one
+      const activeBookings = bookings.filter(
         booking => booking.status === 'CONFIRMED' || booking.status === 'CHECKED_IN'
       );
-      if (activeBooking?.roomNumber) {
-        setRoomNumber(activeBooking.roomNumber);
+      
+      if (activeBookings.length > 0) {
+        // Sort by bookingId descending to get the newest booking
+        const newestBooking = activeBookings.sort((a, b) => b.bookingId - a.bookingId)[0];
+        setRoomNumber(newestBooking.roomNumber);
+        setBookingId(newestBooking.bookingId);
+        console.log('[DEBUG] RoomServicePage - Loaded booking:', newestBooking.bookingId, 'for room:', newestBooking.roomNumber);
       }
     } catch (error) {
       console.error('Error loading bookings:', error);
@@ -114,6 +120,7 @@ const RoomServicePage = () => {
     try {
       setSubmitting(true);
       const orderData: FoodOrderCreate = {
+        bookingId: bookingId || undefined,
         roomNumber: roomNumber.trim(),
         items: cart.map(item => ({
           foodItemId: item.id,
@@ -122,6 +129,9 @@ const RoomServicePage = () => {
         })),
         specialInstructions: specialInstructions.trim() || undefined
       };
+
+      console.log('[DEBUG] RoomServicePage - Submitting order with bookingId:', bookingId);
+      console.log('[DEBUG] RoomServicePage - Order data:', JSON.stringify(orderData, null, 2));
 
       await foodService.createFoodOrder(orderData);
       alert('Đặt món thành công!');

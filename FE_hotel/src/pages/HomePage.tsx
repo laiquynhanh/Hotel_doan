@@ -1,8 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../styles/HomePage.css';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [checkInDate, setCheckInDate] = useState<string>('');
+  const [checkOutDate, setCheckOutDate] = useState<string>('');
+  const dateInRef = useRef<HTMLInputElement | null>(null);
+  const dateOutRef = useRef<HTMLInputElement | null>(null);
 
   const formatToIso = (val: string) => {
     // Accepts dd-mm-yy or dd-mm-yyyy and returns yyyy-mm-dd; if already yyyy-mm-dd, return as-is
@@ -120,13 +125,64 @@ const HomePage = () => {
                 <form onSubmit={handleBookingSubmit}>
                   <div className="check-date">
                     <label htmlFor="date-in">Ngày Nhận Phòng:</label>
-                    <input type="text" className="date-input" id="date-in" />
-                    <i className="icon_calendar"></i>
+                    <input 
+                      ref={dateInRef}
+                      type="date" 
+                      className="form-control" 
+                      id="date-in"
+                      value={checkInDate}
+                      onChange={(e) => {
+                        setCheckInDate(e.target.value);
+                        if (checkOutDate && e.target.value && checkOutDate < e.target.value) {
+                          setCheckOutDate(e.target.value);
+                        }
+                      }}
+                      min={new Date().toISOString().split('T')[0]}
+                      required
+                    />
+                    <i 
+                      className="icon_calendar" 
+                      onClick={() => {
+                        const el = dateInRef.current;
+                        if (!el) return;
+                        // @ts-ignore
+                        if (typeof el.showPicker === 'function') {
+                          // @ts-ignore
+                          el.showPicker();
+                        } else {
+                          el.focus();
+                          el.click();
+                        }
+                      }}
+                    ></i>
                   </div>
                   <div className="check-date">
                     <label htmlFor="date-out">Ngày Trả Phòng:</label>
-                    <input type="text" className="date-input" id="date-out" />
-                    <i className="icon_calendar"></i>
+                    <input 
+                      ref={dateOutRef}
+                      type="date" 
+                      className="form-control" 
+                      id="date-out"
+                      value={checkOutDate}
+                      onChange={(e) => setCheckOutDate(e.target.value)}
+                      min={checkInDate || new Date().toISOString().split('T')[0]}
+                      required
+                    />
+                    <i 
+                      className="icon_calendar" 
+                      onClick={() => {
+                        const el = dateOutRef.current;
+                        if (!el) return;
+                        // @ts-ignore
+                        if (typeof el.showPicker === 'function') {
+                          // @ts-ignore
+                          el.showPicker();
+                        } else {
+                          el.focus();
+                          el.click();
+                        }
+                      }}
+                    ></i>
                   </div>
                   <div className="select-option">
                     <label htmlFor="guest">Khách:</label>

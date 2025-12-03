@@ -9,6 +9,7 @@ public class TableReservationDTO {
     private Long id;
     private Long tableId;
     private String tableNumber;
+    private Long bookingId;
     private String guestName;
     private String guestPhone;
     private String guestEmail;
@@ -43,6 +44,14 @@ public class TableReservationDTO {
 
     public void setTableNumber(String tableNumber) {
         this.tableNumber = tableNumber;
+    }
+
+    public Long getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
     }
 
     public String getGuestName() {

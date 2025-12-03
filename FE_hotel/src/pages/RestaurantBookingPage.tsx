@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { restaurantService } from '../services/restaurant.service';
+import { bookingService } from '../services/booking.service';
 import { authService } from '../services/auth.service';
 import type { RestaurantTable, TableReservationCreate } from '../types/restaurant.types';
 import '../styles/RestaurantBookingPage.css';
@@ -11,6 +12,7 @@ const RestaurantBookingPage = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [selectedTable, setSelectedTable] = useState<RestaurantTable | null>(null);
+  const [bookingId, setBookingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     guestName: '',
     guestPhone: '',
@@ -45,6 +47,23 @@ const RestaurantBookingPage = () => {
       }
     };
     loadUserProfile();
+  }, []);
+
+  // Load newest active booking to link reservation
+  useEffect(() => {
+    const loadActiveBooking = async () => {
+      try {
+        const bookings = await bookingService.getMyBookings();
+        const active = bookings.filter(b => b.status === 'CONFIRMED' || b.status === 'CHECKED_IN');
+        if (active.length > 0) {
+          const newest = active.sort((a, b) => b.bookingId - a.bookingId)[0];
+          setBookingId(newest.bookingId);
+        }
+      } catch (err) {
+        console.error('Error loading bookings for restaurant reservation:', err);
+      }
+    };
+    loadActiveBooking();
   }, []);
 
   const loadTables = async () => {
@@ -138,6 +157,7 @@ const RestaurantBookingPage = () => {
       }
       
       const reservationData: TableReservationCreate = {
+        bookingId: bookingId || undefined,
         tableId: selectedTable.id,
         guestName: formData.guestName,
         guestPhone: formData.guestPhone,

@@ -10,6 +10,7 @@ public class FoodOrderDTO {
     private Long id;
     private Long userId;
     private String userName;
+    private Long bookingId;
     private String roomNumber;
     private LocalDateTime orderTime;
     private LocalDateTime deliveryTime;
@@ -43,6 +44,14 @@ public class FoodOrderDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Long getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
     }
 
     public String getRoomNumber() {

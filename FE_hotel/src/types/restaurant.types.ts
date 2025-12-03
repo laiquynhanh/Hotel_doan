@@ -23,6 +23,7 @@ export interface RestaurantTable {
 }
 
 export interface TableReservationCreate {
+  bookingId?: number;
   tableId: number;
   guestName: string;
   guestPhone: string;
@@ -37,6 +38,7 @@ export interface TableReservation {
   id: number;
   tableId: number;
   tableNumber?: string;
+  bookingId?: number;
   userId?: number;
   guestName: string;
   guestPhone: string;

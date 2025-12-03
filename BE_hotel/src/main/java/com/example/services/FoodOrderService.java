@@ -18,6 +18,7 @@ import com.example.domain.User;
 import com.example.dto.FoodOrderCreateDTO;
 import com.example.dto.FoodOrderDTO;
 import com.example.dto.FoodOrderItemDTO;
+import com.example.exception.BadRequestException;
 import com.example.repositories.FoodItemRepository;
 import com.example.repositories.FoodOrderRepository;
 import com.example.repositories.UserRepository;
@@ -34,14 +35,31 @@ public class FoodOrderService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private com.example.repositories.BookingRepository bookingRepository;
+
     @Transactional
     public FoodOrderDTO createOrder(Long userId, FoodOrderCreateDTO createDTO) {
+        System.out.println("[DEBUG] FoodOrderService.createOrder - Received bookingId: " + createDTO.getBookingId());
+        
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
 
         // Create order
         FoodOrder order = new FoodOrder();
         order.setUser(user);
+        
+        // Enforce booking linkage for all new food orders
+        if (createDTO.getBookingId() == null) {
+            System.out.println("[DEBUG] FoodOrderService.createOrder - No bookingId provided! Rejecting.");
+            throw new BadRequestException("Đơn dịch vụ phải kèm theo bookingId");
+        }
+        System.out.println("[DEBUG] FoodOrderService.createOrder - Looking up booking with ID: " + createDTO.getBookingId());
+        com.example.domain.Booking booking = bookingRepository.findById(createDTO.getBookingId())
+            .orElseThrow(() -> new BadRequestException("Không tìm thấy booking tương ứng"));
+        System.out.println("[DEBUG] FoodOrderService.createOrder - Found booking: " + booking.getId());
+        order.setBooking(booking);
+        
         order.setRoomNumber(createDTO.getRoomNumber());
         order.setSpecialInstructions(createDTO.getSpecialInstructions());
         order.setStatus(FoodOrderStatus.PENDING);
@@ -55,7 +73,7 @@ public class FoodOrderService {
                     .orElseThrow(() -> new RuntimeException("Món ăn không tồn tại: " + itemDTO.getFoodItemId()));
 
             if (!foodItem.getAvailable()) {
-                throw new RuntimeException("Món " + foodItem.getName() + " hiện không có sẵn");
+                throw new BadRequestException("Món " + foodItem.getName() + " hiện không có sẵn");
             }
 
             BigDecimal itemTotal = foodItem.getPrice().multiply(new BigDecimal(itemDTO.getQuantity()));
@@ -138,6 +156,7 @@ public class FoodOrderService {
         dto.setId(order.getId());
         dto.setUserId(order.getUser().getId());
         dto.setUserName(order.getUser().getFullName());
+        dto.setBookingId(order.getBooking() != null ? order.getBooking().getId() : null);
         dto.setRoomNumber(order.getRoomNumber());
         dto.setOrderTime(order.getOrderTime());
         dto.setDeliveryTime(order.getDeliveryTime());

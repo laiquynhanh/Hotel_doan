@@ -33,6 +33,9 @@ public class RestaurantService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private com.example.repositories.BookingRepository bookingRepository;
+
     // Table methods
     public List<RestaurantTableDTO> getAllTables() {
         return tableRepository.findAll().stream()
@@ -89,6 +92,15 @@ public class RestaurantService {
         TableReservation reservation = new TableReservation();
         reservation.setTable(table);
         reservation.setUser(user);
+        
+        // Require and set bookingId to link reservation to booking
+        if (createDTO.getBookingId() == null) {
+            throw new RuntimeException("Đặt bàn phải kèm theo bookingId");
+        }
+        com.example.domain.Booking booking = bookingRepository.findById(createDTO.getBookingId())
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy booking tương ứng"));
+        reservation.setBooking(booking);
+        
         reservation.setGuestName(createDTO.getGuestName());
         reservation.setGuestPhone(createDTO.getGuestPhone());
         reservation.setGuestEmail(createDTO.getGuestEmail());
@@ -205,6 +217,7 @@ public class RestaurantService {
         dto.setId(reservation.getId());
         dto.setTableId(reservation.getTable().getId());
         dto.setTableNumber(reservation.getTable().getTableNumber());
+        dto.setBookingId(reservation.getBooking() != null ? reservation.getBooking().getId() : null);
         dto.setGuestName(reservation.getGuestName());
         dto.setGuestPhone(reservation.getGuestPhone());
         dto.setGuestEmail(reservation.getGuestEmail());

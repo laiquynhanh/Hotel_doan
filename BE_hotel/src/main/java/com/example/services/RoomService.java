@@ -94,6 +94,7 @@ public class RoomService {
 
                     return dto;
                 })
+                .filter(dto -> Boolean.TRUE.equals(dto.getAvailable())) // Only return available rooms
                 .collect(Collectors.toList());
     }
 

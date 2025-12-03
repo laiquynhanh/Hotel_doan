@@ -32,6 +32,10 @@ public class TableReservation {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
+
     @Column(nullable = false)
     private String guestName;
 
@@ -108,6 +112,14 @@ public class TableReservation {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 
     public String getGuestName() {
