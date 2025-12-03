@@ -120,10 +120,21 @@ public class BookingService {
         booking.setCheckOutDate(bookingDTO.getCheckOutDate());
         booking.setNumberOfGuests(bookingDTO.getNumberOfGuests());
         booking.setTotalPrice(totalPrice);
-        booking.setStatus(BookingStatus.PENDING);
+        
+        // Auto-confirm if total price is 0 (100% discount from coupon)
+        if (totalPrice.compareTo(BigDecimal.ZERO) == 0) {
+            booking.setStatus(BookingStatus.CONFIRMED);
+        } else {
+            booking.setStatus(BookingStatus.PENDING);
+        }
+        
         booking.setSpecialRequests(bookingDTO.getSpecialRequests());
         booking.setCouponCode(couponCode);
         booking.setDiscountAmount(discountAmount);
+        
+        // Note: If booking is confirmed automatically (e.g. totalPrice = 0), 
+        // customer doesn't need to wait for manual confirmation
+        // If booking requires payment via VNPay, it will be auto-confirmed after successful payment
 
         Booking savedBooking = bookingRepository.save(booking);
         return convertToDTO(savedBooking);

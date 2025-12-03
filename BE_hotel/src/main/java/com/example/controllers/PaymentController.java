@@ -135,6 +135,7 @@ public class PaymentController {
                     payment.setCardType(params.get("vnp_CardType"));
                     paymentRepository.save(payment);
 
+                    // Auto-confirm booking after successful VNPay payment (no manual confirmation needed)
                     booking.setStatus(com.example.domain.BookingStatus.CONFIRMED);
                     bookingRepository.save(booking);
 

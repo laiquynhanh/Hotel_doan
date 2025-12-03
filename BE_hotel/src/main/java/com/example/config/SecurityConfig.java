@@ -47,6 +47,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/restaurant/tables").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
+                // Admin endpoints - require authentication (JWT will be checked)
+                .requestMatchers("/api/uploads/**").authenticated()
                 // All other requests require authentication
                 .anyRequest().authenticated()
             )

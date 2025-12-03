@@ -81,19 +81,33 @@ const FoodMenuManagement = () => {
       showToast.warning('Vui lòng chọn một file ảnh trước');
       return;
     }
+    
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (imageFile.size > maxSize) {
+      showToast.error('File ảnh quá lớn! Vui lòng chọn file nhỏ hơn 5MB');
+      return;
+    }
+    
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(imageFile.type)) {
+      showToast.error('Định dạng file không hợp lệ! Chỉ chấp nhận JPG, PNG, WebP, GIF');
+      return;
+    }
+    
     try {
       setUploading(true);
-      const uploadPromise = uploadService.uploadImage(imageFile);
-      const result = await showToast.promise(uploadPromise, {
-        pending: 'Đang tải ảnh lên...',
-        success: 'Tải ảnh thành công!',
-        error: 'Không thể tải ảnh'
-      });
+      const result = await uploadService.uploadImage(imageFile);
+      showToast.success('Tải ảnh thành công!');
       if (result && typeof result === 'object' && 'url' in result) {
         setFormData(prev => ({ ...prev, imageUrl: (result as { url: string }).url }));
+        setImageFile(null); // Clear file input after successful upload
       }
     } catch (error: any) {
       console.error('Upload error', error);
+      const errorMsg = error.response?.data?.message || error.response?.data || 'Không thể tải ảnh lên. Vui lòng thử lại';
+      showToast.error(errorMsg);
     } finally {
       setUploading(false);
     }

@@ -44,8 +44,8 @@ const RoomServicePage = () => {
       const activeBooking = bookings.find(
         booking => booking.status === 'CONFIRMED' || booking.status === 'CHECKED_IN'
       );
-      if (activeBooking && activeBooking.room?.roomNumber) {
-        setRoomNumber(activeBooking.room.roomNumber);
+      if (activeBooking?.roomNumber) {
+        setRoomNumber(activeBooking.roomNumber);
       }
     } catch (error) {
       console.error('Error loading bookings:', error);
