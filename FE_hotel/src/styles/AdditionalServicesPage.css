@@ -1,0 +1,266 @@
+/* Additional Services Page Styles */
+.additional-services-page {
+  min-height: 80vh;
+  padding: 80px 0 50px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.additional-services-page .container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.services-card {
+  background: white;
+  border-radius: 20px;
+  padding: 50px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-icon {
+  font-size: 80px;
+  color: #28a745;
+  margin-bottom: 20px;
+  animation: scaleIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.services-card h2 {
+  color: #2c3e50;
+  font-size: 32px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.booking-id {
+  color: #7f8c8d;
+  font-size: 16px;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+.services-question {
+  margin-bottom: 40px;
+}
+
+.services-question h3 {
+  color: #34495e;
+  font-size: 24px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.services-question p {
+  color: #7f8c8d;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.services-options {
+  margin-bottom: 30px;
+}
+
+.btn-view-services {
+  padding: 15px 35px;
+  background: #dfa974;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-view-services:hover {
+  background: #c89961;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(223, 169, 116, 0.3);
+}
+
+.services-list {
+  text-align: left;
+  margin: 30px 0;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.service-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.service-icon {
+  font-size: 40px;
+  min-width: 60px;
+  text-align: center;
+}
+
+.service-info {
+  flex: 1;
+}
+
+.service-info h4 {
+  color: #2c3e50;
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.service-info p {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.btn-order {
+  padding: 10px 25px;
+  background: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.btn-order:hover {
+  background: #138496;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+.service-badge {
+  padding: 8px 20px;
+  background: #f0f0f0;
+  color: #666;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.btn-skip {
+  padding: 15px 40px;
+  background: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-skip:hover {
+  background: #7f8c8d;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(149, 165, 166, 0.3);
+}
+
+.btn-confirm {
+  padding: 15px 40px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-confirm:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .services-card {
+    padding: 30px 20px;
+  }
+
+  .services-card h2 {
+    font-size: 24px;
+  }
+
+  .services-question h3 {
+    font-size: 20px;
+  }
+
+  .success-icon {
+    font-size: 60px;
+  }
+
+  .service-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .service-icon {
+    min-width: auto;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn-skip,
+  .btn-confirm {
+    width: 100%;
+  }
+}

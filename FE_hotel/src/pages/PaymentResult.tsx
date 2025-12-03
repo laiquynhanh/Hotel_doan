@@ -53,14 +53,18 @@ const PaymentResult = () => {
           setStatus('success');
           setMessage('Thanh toán thành công!');
           
-          // Save booking ID for premium services update
-          if (result.bookingId) {
-            setBookingId(result.bookingId);
+          // Redirect to additional services page
+          const pendingBookingId = localStorage.getItem('pendingBookingId');
+          if (pendingBookingId) {
+            localStorage.removeItem('pendingBookingId');
+            setTimeout(() => {
+              navigate(`/additional-services?bookingId=${pendingBookingId}`);
+            }, 2000); // Wait 2 seconds to show success message
+          } else if (result.bookingId) {
+            setTimeout(() => {
+              navigate(`/additional-services?bookingId=${result.bookingId}`);
+            }, 2000);
           }
-          
-          // Load food items and restaurant tables for additional services
-          loadFoodItems();
-          loadRestaurantTables();
         } else {
           setStatus('failed');
           setMessage(result.message || 'Thanh toán thất bại');
@@ -70,7 +74,7 @@ const PaymentResult = () => {
         setMessage('Lỗi xác thực thanh toán');
       }
     })();
-  }, []);
+  }, [navigate, searchParams]);
 
   const loadFoodItems = async () => {
     try {
@@ -270,7 +274,15 @@ const PaymentResult = () => {
               <p style={{ fontSize: '1.1rem', opacity: 0.95, marginBottom: '30px' }}>Cảm ơn bạn đã đặt phòng tại Sona Hotel</p>
               <button 
                 className="btn btn-light btn-lg"
-                onClick={() => navigate('/my-bookings')}
+                onClick={() => {
+                  const pendingBookingId = localStorage.getItem('pendingBookingId');
+                  if (pendingBookingId) {
+                    localStorage.removeItem('pendingBookingId');
+                    navigate(`/additional-services?bookingId=${pendingBookingId}`);
+                  } else {
+                    navigate('/my-bookings');
+                  }
+                }}
                 style={{
                   padding: '12px 40px',
                   borderRadius: '50px',

@@ -277,8 +277,8 @@ const MyBookingsPage = () => {
                             </button>
                           )}
 
-                          {/* Hiện nút thanh toán VNPAY cho trạng thái Chờ (PENDING) */}
-                          {booking.status === BookingStatus.PENDING && (
+                          {/* Hiện nút thanh toán VNPAY cho trạng thái Chờ (PENDING) và tổng tiền > 0 */}
+                          {booking.status === BookingStatus.PENDING && booking.totalPrice > 0 && (
                             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                               <select
                                 value={selectedDepositPercentByBooking[booking.bookingId] ?? 30}

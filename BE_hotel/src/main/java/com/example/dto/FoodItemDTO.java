@@ -12,11 +12,12 @@ public class FoodItemDTO {
     private String description;
     private String imageUrl;
     private Boolean available;
+    private Integer stockQuantity;
 
     public FoodItemDTO() {}
 
     public FoodItemDTO(Long id, String name, FoodCategory category, BigDecimal price, 
-                      String description, String imageUrl, Boolean available) {
+                      String description, String imageUrl, Boolean available, Integer stockQuantity) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -24,6 +25,7 @@ public class FoodItemDTO {
         this.description = description;
         this.imageUrl = imageUrl;
         this.available = available;
+        this.stockQuantity = stockQuantity;
     }
 
     // Getters and Setters
@@ -81,5 +83,13 @@ public class FoodItemDTO {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    public Integer getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 }

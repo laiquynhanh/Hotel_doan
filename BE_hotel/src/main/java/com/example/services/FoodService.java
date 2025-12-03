@@ -51,6 +51,10 @@ public class FoodService {
         foodItem.setImageUrl(foodItemDetails.getImageUrl());
         foodItem.setAvailable(foodItemDetails.getAvailable());
         
+        if (foodItemDetails.getStockQuantity() != null) {
+            foodItem.setStockQuantity(foodItemDetails.getStockQuantity());
+        }
+        
         return foodItemRepository.save(foodItem);
     }
 

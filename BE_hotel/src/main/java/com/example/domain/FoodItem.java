@@ -40,6 +40,9 @@ public class FoodItem {
     @Column(nullable = false)
     private Boolean available = true;
 
+    @Column(nullable = false)
+    private Integer stockQuantity = 0;
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
@@ -122,6 +125,14 @@ public class FoodItem {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    public Integer getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     public LocalDateTime getCreatedAt() {

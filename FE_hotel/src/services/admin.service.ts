@@ -204,5 +204,44 @@ export const adminService = {
 
   deleteReview: async (id: number) => {
     await api.delete(`/admin/reviews/${id}`);
+  },
+
+  // Analytics
+  getAnalyticsOverview: async (startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    const response = await api.get(`/admin/analytics/overview?${params.toString()}`);
+    return response.data;
+  },
+
+  getPopularRooms: async (startDate?: string, endDate?: string, limit: number = 5) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    params.append('limit', limit.toString());
+    const response = await api.get(`/admin/analytics/popular-rooms?${params.toString()}`);
+    return response.data;
+  },
+
+  getRevenueByMonth: async (year: number) => {
+    const response = await api.get(`/admin/analytics/revenue-by-month?year=${year}`);
+    return response.data;
+  },
+
+  getBookingsByStatus: async (startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    const response = await api.get(`/admin/analytics/bookings-by-status?${params.toString()}`);
+    return response.data;
+  },
+
+  getCouponUsage: async (startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    const response = await api.get(`/admin/analytics/coupon-usage?${params.toString()}`);
+    return response.data;
   }
 };

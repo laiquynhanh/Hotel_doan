@@ -25,6 +25,7 @@ import RoomServicePage from './pages/RoomServicePage';
 import RestaurantBookingPage from './pages/RestaurantBookingPage';
 import MyFoodOrdersPage from './pages/MyFoodOrdersPage';
 import MyReservationsPage from './pages/MyReservationsPage';
+import AdditionalServicesPage from './pages/AdditionalServicesPage';
 // Admin Components - Lazy loaded for code splitting
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
 const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
@@ -78,6 +79,7 @@ function App() {
             <Route path="/restaurant-booking" element={<RestaurantBookingPage />} />
             <Route path="/my-food-orders" element={<MyFoodOrdersPage />} />
             <Route path="/my-reservations" element={<MyReservationsPage />} />
+            <Route path="/additional-services" element={<AdditionalServicesPage />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { foodService } from '../services/food.service';
+import { bookingService } from '../services/booking.service';
 import { formatPrice } from '../utils/currency';
 import type { FoodItem, CartItem, FoodOrderCreate } from '../types/food.types';
 import '../styles/RoomServicePage.css';
@@ -33,7 +34,23 @@ const RoomServicePage = () => {
       return;
     }
     loadFoodItems();
+    loadUserBooking();
   }, [user, navigate]);
+
+  const loadUserBooking = async () => {
+    try {
+      const bookings = await bookingService.getMyBookings();
+      // Find active booking (CONFIRMED or CHECKED_IN)
+      const activeBooking = bookings.find(
+        booking => booking.status === 'CONFIRMED' || booking.status === 'CHECKED_IN'
+      );
+      if (activeBooking && activeBooking.room?.roomNumber) {
+        setRoomNumber(activeBooking.room.roomNumber);
+      }
+    } catch (error) {
+      console.error('Error loading bookings:', error);
+    }
+  };
 
   const loadFoodItems = async () => {
     try {
@@ -89,8 +106,8 @@ const RoomServicePage = () => {
       return;
     }
 
-    if (!roomNumber.trim()) {
-      alert('Vui lòng nhập số phòng');
+    if (!roomNumber || !roomNumber.trim()) {
+      alert('Bạn chưa có đặt phòng nào. Vui lòng đặt phòng trước khi đặt món.');
       return;
     }
 
@@ -174,10 +191,15 @@ const RoomServicePage = () => {
                         <p className="card-text">
                           <strong className="text-primary">{formatPrice(item.price)}</strong>
                         </p>
+                        <p className="card-text">
+                          <span className={`badge ${item.stockQuantity > 10 ? 'bg-success' : item.stockQuantity > 0 ? 'bg-warning' : 'bg-danger'}`}>
+                            Số lượng: {item.stockQuantity}
+                          </span>
+                        </p>
                       </div>
                     </div>
                     <div className="col-md-3 d-flex align-items-center justify-content-center">
-                      {item.available ? (
+                      {item.available && item.stockQuantity > 0 ? (
                         <button
                           className="btn btn-primary"
                           onClick={() => addToCart(item)}
@@ -185,7 +207,9 @@ const RoomServicePage = () => {
                           <i className="fa fa-plus me-2"></i>Thêm
                         </button>
                       ) : (
-                        <span className="badge bg-danger">Hết hàng</span>
+                        <span className="badge bg-danger">
+                          {item.stockQuantity === 0 ? 'Món tạm thời đã hết' : 'Hết hàng'}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -243,16 +267,23 @@ const RoomServicePage = () => {
                         ))}
                       </div>
 
-                      <div className="mb-3">
-                        <label className="form-label">Số Phòng *</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="VD: 101"
-                          value={roomNumber}
-                          onChange={(e) => setRoomNumber(e.target.value)}
-                        />
-                      </div>
+                      {!roomNumber && (
+                        <div className="alert alert-warning mb-3">
+                          <i className="fa fa-exclamation-triangle me-2"></i>
+                          <strong>Bạn chưa có đặt phòng</strong>
+                          <p className="mb-0 mt-1">
+                            Vui lòng đặt phòng trước để sử dụng dịch vụ Room Service.
+                            <a href="/rooms" className="alert-link ms-2">Đặt phòng ngay →</a>
+                          </p>
+                        </div>
+                      )}
+                      
+                      {roomNumber && (
+                        <div className="alert alert-info mb-3">
+                          <i className="fa fa-check-circle me-2"></i>
+                          <strong>Giao đến phòng: {roomNumber}</strong>
+                        </div>
+                      )}
 
                       <div className="mb-3">
                         <label className="form-label">Ghi Chú</label>

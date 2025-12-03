@@ -23,6 +23,7 @@ export interface FoodItem {
   description: string;
   imageUrl: string;
   available: boolean;
+  stockQuantity: number;
 }
 
 export interface FoodOrderItem {

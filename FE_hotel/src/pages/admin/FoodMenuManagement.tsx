@@ -19,7 +19,8 @@ const FoodMenuManagement = () => {
     price: '',
     description: '',
     imageUrl: '',
-    available: true
+    available: true,
+    stockQuantity: '0'
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -50,7 +51,8 @@ const FoodMenuManagement = () => {
         price: item.price.toString(),
         description: item.description,
         imageUrl: item.imageUrl,
-        available: item.available
+        available: item.available,
+        stockQuantity: item.stockQuantity.toString()
       });
       setImageFile(null);
     } else {
@@ -61,7 +63,8 @@ const FoodMenuManagement = () => {
         price: '',
         description: '',
         imageUrl: '',
-        available: true
+        available: true,
+        stockQuantity: '50'
       });
       setImageFile(null);
     }
@@ -107,7 +110,8 @@ const FoodMenuManagement = () => {
     try {
       const itemData = {
         ...formData,
-        price: parseFloat(formData.price)
+        price: Number.parseFloat(formData.price),
+        stockQuantity: Number.parseInt(formData.stockQuantity, 10)
       };
 
       if (editingItem) {
@@ -219,7 +223,7 @@ const FoodMenuManagement = () => {
                   <th>Tên món</th>
                   <th>Danh mục</th>
                   <th>Giá</th>
-                  <th>Trạng thái</th>
+                  <th>Số lượng</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
@@ -244,17 +248,9 @@ const FoodMenuManagement = () => {
                     <td>{categoryLabels[item.category]}</td>
                     <td><strong>{formatPrice(item.price)}</strong></td>
                     <td>
-                      <div className="form-check form-switch">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          checked={item.available}
-                          onChange={() => handleToggleAvailability(item)}
-                        />
-                        <label className="form-check-label">
-                          {item.available ? 'Còn món' : 'Hết món'}
-                        </label>
-                      </div>
+                      <span className={`badge ${item.stockQuantity > 10 ? 'bg-success' : item.stockQuantity > 0 ? 'bg-warning' : 'bg-danger'}`}>
+                        Số lượng: {item.stockQuantity}
+                      </span>
                     </td>
                     <td>
                       <button
@@ -339,18 +335,18 @@ const FoodMenuManagement = () => {
                     </div>
 
                     <div className="col-md-6 mb-3">
-                      <label className="form-label">Trạng thái</label>
-                      <div className="form-check form-switch mt-2">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          checked={formData.available}
-                          onChange={(e) => setFormData({ ...formData, available: e.target.checked })}
-                        />
-                        <label className="form-check-label">
-                          {formData.available ? 'Còn món' : 'Hết món'}
-                        </label>
-                      </div>
+                      <label className="form-label">Số lượng *</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={formData.stockQuantity}
+                        onChange={(e) => setFormData({ ...formData, stockQuantity: e.target.value })}
+                        required
+                        min="0"
+                      />
+                      <small className="text-muted">
+                        Số lượng món còn lại trong kho
+                      </small>
                     </div>
 
                     <div className="col-12 mb-3">

@@ -6,6 +6,7 @@ import { paymentService } from '../services/payment.service';
 import { foodService } from '../services/food.service';
 import { restaurantService } from '../services/restaurant.service';
 import { couponService } from '../services/coupon.service';
+import { authService } from '../services/auth.service';
 import type { Room, RoomType } from '../types/room.types';
 import type { FoodItem, FoodOrderItem } from '../types/food.types';
 import type { RestaurantTable } from '../types/restaurant.types';
@@ -59,6 +60,24 @@ const RoomDetailsPage = () => {
   const [guestName, setGuestName] = useState('');
   const [guestPhone, setGuestPhone] = useState('');
   const [restaurantNotes, setRestaurantNotes] = useState('');
+
+  // Load user profile to auto-fill form
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (isAuthenticated) {
+        try {
+          const userProfile = await authService.getCurrentUserApi();
+          if (userProfile) {
+            setGuestName(userProfile.fullName || '');
+            setGuestPhone(userProfile.phoneNumber || '');
+          }
+        } catch (err) {
+          console.error('Error loading user profile:', err);
+        }
+      }
+    };
+    loadUserProfile();
+  }, [isAuthenticated]);
 
   // Additional Services State
   const [additionalServices, setAdditionalServices] = useState<{
@@ -396,7 +415,7 @@ const RoomDetailsPage = () => {
       setBookingLoading(true);
       setBookingError('');
       
-      await bookingService.createBooking({
+      const result = await bookingService.createBooking({
         roomId: parseInt(id!),
         checkInDate,
         checkOutDate,
@@ -408,10 +427,9 @@ const RoomDetailsPage = () => {
       setBookingSuccess(true);
       setBookingError('');
       
-      // Show success message and redirect
+      // Redirect to additional services page with bookingId
       setTimeout(() => {
-        alert('Đặt phòng thành công! Chúng tôi sẽ liên hệ với bạn sớm.');
-        navigate('/my-bookings');
+        navigate(`/additional-services?bookingId=${result.id}`);
       }, 1000);
       
     } catch (err: any) {
@@ -513,6 +531,8 @@ const RoomDetailsPage = () => {
       console.debug('[RoomDetailsPage] createPayment resp:', resp);
       
       if (resp && resp.paymentUrl) {
+        // Lưu bookingId để sau khi thanh toán sẽ redirect đến additional services
+        localStorage.setItem('pendingBookingId', created.id.toString());
         window.location.href = resp.paymentUrl;
       } else {
         setBookingError('Không nhận được URL thanh toán');
@@ -740,40 +760,35 @@ const RoomDetailsPage = () => {
                   </div>
 
                   {/* Coupon Input */}
-                  <div className="coupon-section" style={{ marginTop: '15px' }}>
+                  <div className="coupon-section">
                     <label htmlFor="coupon-code">Mã Giảm Giá (Tùy chọn):</label>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <input
-                        id="coupon-code"
-                        type="text"
-                        className="form-control"
-                        placeholder="Nhập mã giảm giá"
-                        value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                        disabled={couponApplied}
-                        style={{ flex: 1 }}
-                      />
-                      {!couponApplied ? (
-                        <button 
-                          type="button"
-                          className="btn btn-outline-primary" 
-                          onClick={applyCoupon}
-                          disabled={couponLoading || !couponCode.trim()}
-                          style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}
-                        >
-                          {couponLoading ? 'Kiểm tra...' : 'Áp dụng'}
-                        </button>
-                      ) : (
-                        <button 
-                          type="button"
-                          className="btn btn-outline-danger" 
-                          onClick={removeCoupon}
-                          style={{ padding: '8px 16px' }}
-                        >
-                          Hủy
-                        </button>
-                      )}
-                    </div>
+                    <input
+                      id="coupon-code"
+                      type="text"
+                      className="form-control"
+                      placeholder="Nhập mã giảm giá"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      disabled={couponApplied}
+                    />
+                    {!couponApplied ? (
+                      <button 
+                        type="button"
+                        className="coupon-apply-btn" 
+                        onClick={applyCoupon}
+                        disabled={couponLoading || !couponCode.trim()}
+                      >
+                        {couponLoading ? 'KIỂM TRA...' : 'ÁP DỤNG'}
+                      </button>
+                    ) : (
+                      <button 
+                        type="button"
+                        className="coupon-remove-btn" 
+                        onClick={removeCoupon}
+                      >
+                        HỦY
+                      </button>
+                    )}
                     {couponError && (
                       <small style={{ color: '#dc3545', display: 'block', marginTop: '5px' }}>{couponError}</small>
                     )}
@@ -813,22 +828,35 @@ const RoomDetailsPage = () => {
                     </div>
                   )}
                   
-                  <div className="deposit-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <select
-                      value={selectedDepositPercent}
-                      onChange={(e) => setSelectedDepositPercent(parseInt(e.target.value))}
-                      style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #ddd' }}
-                      disabled={bookingLoading}
-                    >
-                      {[20,30,40,50].map(p => (
-                        <option key={p} value={p}>{p}%</option>
-                      ))}
-                    </select>
+                  {/* Nút Đặt Phòng chính */}
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary" 
+                    disabled={bookingLoading}
+                    style={{ width: '100%', marginTop: '15px' }}
+                  >
+                    {bookingLoading ? 'Đang xử lý...' : 'Đặt Phòng'}
+                  </button>
 
-                    <button type="button" className="btn-deposit" onClick={handleDepositBooking} disabled={bookingLoading}>
-                      {bookingLoading ? 'Đang xử lý...' : `Đặt cọc giữ phòng ${selectedDepositPercent}% (${formatPrice(Math.round(calculateTotalPrice() * (selectedDepositPercent/100)))})`}
-                    </button>
-                  </div>
+                  {/* Chỉ hiển thị đặt cọc khi tổng tiền > 0 */}
+                  {calculateTotalPrice() > 0 && (
+                    <div className="deposit-row" style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}>
+                      <select
+                        value={selectedDepositPercent}
+                        onChange={(e) => setSelectedDepositPercent(parseInt(e.target.value))}
+                        style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #ddd' }}
+                        disabled={bookingLoading}
+                      >
+                        {[20,30,40,50].map(p => (
+                          <option key={p} value={p}>{p}%</option>
+                        ))}
+                      </select>
+
+                      <button type="button" className="btn-deposit" onClick={handleDepositBooking} disabled={bookingLoading}>
+                        {bookingLoading ? 'Đang xử lý...' : `Đặt cọc giữ phòng ${selectedDepositPercent}% (${formatPrice(Math.round(calculateTotalPrice() * (selectedDepositPercent/100)))})`}
+                      </button>
+                    </div>
+                  )}
                 </form>
               </div>
 

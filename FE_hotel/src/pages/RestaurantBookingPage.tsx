@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { restaurantService } from '../services/restaurant.service';
+import { authService } from '../services/auth.service';
 import type { RestaurantTable, TableReservationCreate } from '../types/restaurant.types';
 import '../styles/RestaurantBookingPage.css';
 
@@ -22,6 +23,28 @@ const RestaurantBookingPage = () => {
 
   useEffect(() => {
     loadTables();
+  }, []);
+
+  // Load user profile to auto-fill form
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (authService.isAuthenticated()) {
+        try {
+          const userProfile = await authService.getCurrentUserApi();
+          if (userProfile) {
+            setFormData(prev => ({
+              ...prev,
+              guestName: userProfile.fullName || '',
+              guestPhone: userProfile.phoneNumber || '',
+              guestEmail: userProfile.email || ''
+            }));
+          }
+        } catch (err) {
+          console.error('Error loading user profile:', err);
+        }
+      }
+    };
+    loadUserProfile();
   }, []);
 
   const loadTables = async () => {
@@ -66,17 +89,66 @@ const RestaurantBookingPage = () => {
 
     try {
       setSubmitting(true);
+      
+      // Convert date from dd/MM/yyyy to yyyy-MM-dd if needed
+      let formattedDate = formData.reservationDate;
+      if (formattedDate.includes('/')) {
+        const [day, month, year] = formattedDate.split('/');
+        formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      }
+      
+      // Convert time from 12h format (HH mm AM/PM) to 24h format (HH:mm:ss)
+      let formattedTime = formData.reservationTime.trim();
+      console.log('Original time:', formattedTime);
+      
+      // Check if it contains AM/PM indicator (CH = PM, SA = AM in Vietnamese)
+      if (formattedTime.includes('CH') || formattedTime.includes('SA') || 
+          formattedTime.includes('AM') || formattedTime.includes('PM')) {
+        const isPM = formattedTime.includes('CH') || formattedTime.includes('PM');
+        console.log('Is PM:', isPM);
+        
+        // Remove AM/PM/CH/SA and split
+        const timeOnly = formattedTime.replace(/CH|SA|AM|PM/gi, '').trim();
+        console.log('Time only:', timeOnly);
+        
+        const parts = timeOnly.split(/[\s:]+/); // Split by space or colon
+        console.log('Time parts:', parts);
+        
+        let hours = Number.parseInt(parts[0], 10);
+        const minutes = parts[1] ? Number.parseInt(parts[1], 10) : 0;
+        console.log('Parsed hours:', hours, 'minutes:', minutes);
+        
+        // Convert to 24h format
+        if (isPM && hours !== 12) {
+          hours += 12;
+        } else if (!isPM && hours === 12) {
+          hours = 0;
+        }
+        
+        formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+        console.log('Formatted time (24h):', formattedTime);
+      } else if (formattedTime.includes(':')) {
+        // Already in HH:mm format, just add seconds
+        if (!formattedTime.endsWith(':00')) {
+          formattedTime = formattedTime + ':00';
+        }
+        console.log('Time already in 24h format:', formattedTime);
+      } else {
+        console.error('Unknown time format:', formattedTime);
+      }
+      
       const reservationData: TableReservationCreate = {
         tableId: selectedTable.id,
         guestName: formData.guestName,
         guestPhone: formData.guestPhone,
         guestEmail: formData.guestEmail || undefined,
-        reservationDate: formData.reservationDate,
-        reservationTime: formData.reservationTime + ':00', // Add seconds
+        reservationDate: formattedDate,
+        reservationTime: formattedTime,
         partySize: formData.partySize,
         specialRequests: formData.specialRequests || undefined
       };
 
+      console.log('Sending reservation data:', reservationData);
       await restaurantService.createReservation(reservationData);
       alert('Đặt bàn thành công!');
       navigate('/my-reservations');
@@ -84,11 +156,23 @@ const RestaurantBookingPage = () => {
       console.error('Error creating reservation:', error);
       const errorData = error.response?.data;
       let errorMessage = 'Không thể đặt bàn. Vui lòng thử lại.';
+      
       if (errorData?.errors) {
         errorMessage = Object.values(errorData.errors).join(', ');
       } else if (errorData?.message) {
         errorMessage = errorData.message;
+      } else if (typeof errorData === 'string') {
+        errorMessage = errorData;
       }
+      
+      // Check if error is about table already booked
+      if (errorMessage.toLowerCase().includes('already') || 
+          errorMessage.toLowerCase().includes('đã đặt') ||
+          errorMessage.toLowerCase().includes('not available') ||
+          error.response?.status === 400) {
+        errorMessage = `Bàn ${selectedTable.tableNumber} đã được đặt trong khung giờ này. Vui lòng chọn bàn khác hoặc khung giờ khác.`;
+      }
+      
       alert(errorMessage);
     } finally {
       setSubmitting(false);
