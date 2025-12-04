@@ -39,6 +39,9 @@ public class FoodOrderController {
             @Valid @RequestBody FoodOrderCreateDTO createDTO,
             Authentication authentication) {
         
+        System.out.println("[DEBUG] FoodOrderController.createOrder - Received bookingId: " + createDTO.getBookingId());
+        System.out.println("[DEBUG] FoodOrderController.createOrder - Received roomNumber: " + createDTO.getRoomNumber());
+        
         String username = authentication.getName();
         User user = userService.findByUsername(username);
         if (user == null) {
@@ -46,6 +49,7 @@ public class FoodOrderController {
         }
         
         FoodOrderDTO order = foodOrderService.createOrder(user.getId(), createDTO);
+        System.out.println("[DEBUG] FoodOrderController.createOrder - Created order with bookingId: " + order.getBookingId());
         return ResponseEntity.ok(order);
     }
 

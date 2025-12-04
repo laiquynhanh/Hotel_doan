@@ -16,7 +16,9 @@ const RoomServicePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [roomNumber, setRoomNumber] = useState('');
+  const [bookingId, setBookingId] = useState<number | null>(null);
   const [specialInstructions, setSpecialInstructions] = useState('');
+  const [showContinueModal, setShowContinueModal] = useState(false);
 
   const categories = [
     { value: 'ALL', label: 'Tất Cả' },
@@ -40,12 +42,17 @@ const RoomServicePage = () => {
   const loadUserBooking = async () => {
     try {
       const bookings = await bookingService.getMyBookings();
-      // Find active booking (CONFIRMED or CHECKED_IN)
-      const activeBooking = bookings.find(
+      // Find active bookings (CONFIRMED or CHECKED_IN) and get the NEWEST one
+      const activeBookings = bookings.filter(
         booking => booking.status === 'CONFIRMED' || booking.status === 'CHECKED_IN'
       );
-      if (activeBooking && activeBooking.room?.roomNumber) {
-        setRoomNumber(activeBooking.room.roomNumber);
+      
+      if (activeBookings.length > 0) {
+        // Sort by bookingId descending to get the newest booking
+        const newestBooking = activeBookings.sort((a, b) => b.bookingId - a.bookingId)[0];
+        setRoomNumber(newestBooking.roomNumber);
+        setBookingId(newestBooking.bookingId);
+        console.log('[DEBUG] RoomServicePage - Loaded booking:', newestBooking.bookingId, 'for room:', newestBooking.roomNumber);
       }
     } catch (error) {
       console.error('Error loading bookings:', error);
@@ -114,6 +121,7 @@ const RoomServicePage = () => {
     try {
       setSubmitting(true);
       const orderData: FoodOrderCreate = {
+        bookingId: bookingId || undefined,
         roomNumber: roomNumber.trim(),
         items: cart.map(item => ({
           foodItemId: item.id,
@@ -123,12 +131,21 @@ const RoomServicePage = () => {
         specialInstructions: specialInstructions.trim() || undefined
       };
 
+      console.log('[DEBUG] RoomServicePage - Submitting order with bookingId:', bookingId);
+      console.log('[DEBUG] RoomServicePage - Order data:', JSON.stringify(orderData, null, 2));
+
       await foodService.createFoodOrder(orderData);
-      alert('Đặt món thành công!');
       setCart([]);
       setRoomNumber('');
       setSpecialInstructions('');
-      navigate('/my-food-orders');
+      
+      // Kiểm tra xem có đến từ AdditionalServicesPage không
+      const returnToAdditional = localStorage.getItem('returnToAdditionalServices');
+      if (returnToAdditional === 'true') {
+        setShowContinueModal(true);
+      } else {
+        navigate('/my-food-orders');
+      }
     } catch (error: any) {
       console.error('Error creating order:', error);
       alert(error.response?.data || 'Không thể đặt món. Vui lòng thử lại.');
@@ -149,6 +166,23 @@ const RoomServicePage = () => {
 
   return (
     <div className="room-service-page">
+      {/* Breadcrumb Banner */}
+      <div className="breadcrumb-section">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="breadcrumb-text">
+                <h2>Thực Đơn Khách Sạn</h2>
+                <div className="bt-option">
+                  <a href="/">Trang Chủ</a>
+                  <span>Room Service</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="container my-5">
         <h2 className="text-center mb-4">Đặt Món Room Service</h2>
 
@@ -328,6 +362,128 @@ const RoomServicePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal hỏi tiếp tục đặt dịch vụ */}
+      {showContinueModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '40px 30px',
+            maxWidth: '500px',
+            textAlign: 'center',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+            animation: 'fadeIn 0.3s ease'
+          }}>
+            <div style={{
+              fontSize: '50px',
+              marginBottom: '20px'
+            }}>
+              ✅
+            </div>
+            <h3 style={{
+              fontSize: '1.5rem',
+              marginBottom: '15px',
+              fontWeight: '600',
+              color: '#333'
+            }}>
+              Đặt hàng thành công!
+            </h3>
+            <p style={{
+              fontSize: '1rem',
+              color: '#666',
+              marginBottom: '30px',
+              lineHeight: '1.5'
+            }}>
+              Bạn có muốn đặt thêm gì không?
+            </p>
+            
+            <div style={{
+              display: 'flex',
+              gap: '15px',
+              justifyContent: 'center'
+            }}>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('returnToAdditionalServices');
+                  localStorage.removeItem('currentBookingId');
+                  setShowContinueModal(false);
+                  navigate('/my-bookings');
+                }}
+                style={{
+                  padding: '12px 30px',
+                  borderRadius: '6px',
+                  border: '1px solid #ddd',
+                  backgroundColor: '#f5f5f5',
+                  color: '#333',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#e8e8e8';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f5f5f5';
+                }}
+              >
+                Không, quay về
+              </button>
+              <button
+                onClick={() => {
+                  const bookingIdFromStorage = localStorage.getItem('currentBookingId');
+                  setShowContinueModal(false);
+                  navigate(`/additional-services?bookingId=${bookingIdFromStorage}`);
+                }}
+                style={{
+                  padding: '12px 30px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  backgroundColor: '#2ecc71',
+                  color: 'white',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#27ae60';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#2ecc71';
+                }}
+              >
+                Có, tiếp tục
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </div>
   );
 };

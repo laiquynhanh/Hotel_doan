@@ -8,7 +8,7 @@ export const bookingService = {
     return response.data;
   },
 
-  // Lấy danh sách booking của user hiện tại với thông tin chi tiết
+  // Lấy danh sách booking của user hiện tại với thông tin chi tiết  
   getMyBookings: async (): Promise<BookingDetail[]> => {
     const response = await api.get('/bookings/my-bookings');
     return response.data;

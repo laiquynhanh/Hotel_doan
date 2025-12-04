@@ -17,6 +17,18 @@ public class ReviewDTO {
     private Boolean approved;
     private LocalDateTime createdAt;
 
+    // Default constructor
+    public ReviewDTO() {
+    }
+
+    // Constructor for creating reviews
+    public ReviewDTO(Long roomId, Long bookingId, Integer rating, String comment) {
+        this.roomId = roomId;
+        this.bookingId = bookingId;
+        this.rating = rating;
+        this.comment = comment;
+    }
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

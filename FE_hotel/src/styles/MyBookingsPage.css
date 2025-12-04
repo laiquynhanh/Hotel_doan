@@ -454,6 +454,45 @@
   color: #fff;
 }
 
+/* Premium Services Styles */
+.premium-service {
+  background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+  border-left: 4px solid #dfa974;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.service-icon-inline {
+  font-size: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.service-name {
+  font-weight: 600;
+  color: #19191a;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+.service-note {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.service-note i {
+  color: #17a2b8;
+  font-size: 14px;
+}
+
 @media (max-width: 768px) {
   .my-bookings-page {
     margin-top: 80px;

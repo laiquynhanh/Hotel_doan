@@ -11,6 +11,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class TableReservationCreateDTO {
+    private Long bookingId;
+    
     @NotNull(message = "Vui lòng chọn bàn")
     private Long tableId;
     
@@ -40,6 +42,14 @@ public class TableReservationCreateDTO {
     public TableReservationCreateDTO() {}
 
     // Getters and Setters
+    public Long getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
+    }
+
     public Long getTableId() {
         return tableId;
     }

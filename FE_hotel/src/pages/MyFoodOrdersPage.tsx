@@ -116,8 +116,8 @@ const MyFoodOrdersPage = () => {
                     <div className="col-md-8">
                       <h6>Chi tiết đơn hàng:</h6>
                       <ul className="order-items-list">
-                        {order.items.map(item => (
-                          <li key={item.id}>
+                        {order.items.map((item, index) => (
+                          <li key={`${order.id}-${item.foodItemId}-${index}`}>
                             <span className="item-name">{item.foodItemName}</span>
                             <span className="item-quantity">x{item.quantity}</span>
                             <span className="item-price">{formatPrice(item.price * item.quantity)}</span>

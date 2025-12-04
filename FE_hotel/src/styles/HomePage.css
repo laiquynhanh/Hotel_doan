@@ -1,0 +1,11 @@
+/* Override for HomePage booking-form calendar icons */
+.booking-form .check-date .icon_calendar {
+  pointer-events: auto;
+  cursor: pointer;
+  /* Adjust position to align with date input field */
+  top: 70%;
+  transform: translateY(-50%);
+  bottom: auto;
+  right: 15px;
+  font-size: 18px;
+}

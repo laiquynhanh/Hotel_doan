@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { restaurantService } from '../services/restaurant.service';
+import { bookingService } from '../services/booking.service';
 import { authService } from '../services/auth.service';
 import type { RestaurantTable, TableReservationCreate } from '../types/restaurant.types';
 import '../styles/RestaurantBookingPage.css';
@@ -11,6 +12,8 @@ const RestaurantBookingPage = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [selectedTable, setSelectedTable] = useState<RestaurantTable | null>(null);
+  const [bookingId, setBookingId] = useState<number | null>(null);
+  const [showContinueModal, setShowContinueModal] = useState(false);
   const [formData, setFormData] = useState({
     guestName: '',
     guestPhone: '',
@@ -45,6 +48,23 @@ const RestaurantBookingPage = () => {
       }
     };
     loadUserProfile();
+  }, []);
+
+  // Load newest active booking to link reservation
+  useEffect(() => {
+    const loadActiveBooking = async () => {
+      try {
+        const bookings = await bookingService.getMyBookings();
+        const active = bookings.filter(b => b.status === 'CONFIRMED' || b.status === 'CHECKED_IN');
+        if (active.length > 0) {
+          const newest = active.sort((a, b) => b.bookingId - a.bookingId)[0];
+          setBookingId(newest.bookingId);
+        }
+      } catch (err) {
+        console.error('Error loading bookings for restaurant reservation:', err);
+      }
+    };
+    loadActiveBooking();
   }, []);
 
   const loadTables = async () => {
@@ -138,6 +158,7 @@ const RestaurantBookingPage = () => {
       }
       
       const reservationData: TableReservationCreate = {
+        bookingId: bookingId || undefined,
         tableId: selectedTable.id,
         guestName: formData.guestName,
         guestPhone: formData.guestPhone,
@@ -150,8 +171,15 @@ const RestaurantBookingPage = () => {
 
       console.log('Sending reservation data:', reservationData);
       await restaurantService.createReservation(reservationData);
-      alert('Đặt bàn thành công!');
-      navigate('/my-reservations');
+      
+      // Kiểm tra xem có đến từ AdditionalServicesPage không
+      const returnToAdditional = localStorage.getItem('returnToAdditionalServices');
+      if (returnToAdditional === 'true') {
+        setShowContinueModal(true);
+      } else {
+        alert('Đặt bàn thành công!');
+        navigate('/my-reservations');
+      }
     } catch (error: any) {
       console.error('Error creating reservation:', error);
       const errorData = error.response?.data;
@@ -347,6 +375,128 @@ const RestaurantBookingPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal hỏi tiếp tục đặt dịch vụ */}
+      {showContinueModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '40px 30px',
+            maxWidth: '500px',
+            textAlign: 'center',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+            animation: 'fadeIn 0.3s ease'
+          }}>
+            <div style={{
+              fontSize: '50px',
+              marginBottom: '20px'
+            }}>
+              ✅
+            </div>
+            <h3 style={{
+              fontSize: '1.5rem',
+              marginBottom: '15px',
+              fontWeight: '600',
+              color: '#333'
+            }}>
+              Đặt hàng thành công!
+            </h3>
+            <p style={{
+              fontSize: '1rem',
+              color: '#666',
+              marginBottom: '30px',
+              lineHeight: '1.5'
+            }}>
+              Bạn có muốn đặt thêm gì không?
+            </p>
+            
+            <div style={{
+              display: 'flex',
+              gap: '15px',
+              justifyContent: 'center'
+            }}>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('returnToAdditionalServices');
+                  localStorage.removeItem('currentBookingId');
+                  setShowContinueModal(false);
+                  navigate('/my-bookings');
+                }}
+                style={{
+                  padding: '12px 30px',
+                  borderRadius: '6px',
+                  border: '1px solid #ddd',
+                  backgroundColor: '#f5f5f5',
+                  color: '#333',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#e8e8e8';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f5f5f5';
+                }}
+              >
+                Không, quay về
+              </button>
+              <button
+                onClick={() => {
+                  const bookingIdFromStorage = localStorage.getItem('currentBookingId');
+                  setShowContinueModal(false);
+                  navigate(`/additional-services?bookingId=${bookingIdFromStorage}`);
+                }}
+                style={{
+                  padding: '12px 30px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  backgroundColor: '#2ecc71',
+                  color: 'white',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#27ae60';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#2ecc71';
+                }}
+              >
+                Có, tiếp tục
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotEmpty;
 
 public class FoodOrderCreateDTO {
+    private Long bookingId;
     private String roomNumber;
     
     @NotEmpty(message = "Phải có ít nhất một món")
@@ -21,6 +22,14 @@ public class FoodOrderCreateDTO {
     }
 
     // Getters and Setters
+    public Long getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
+    }
+
     public String getRoomNumber() {
         return roomNumber;
     }

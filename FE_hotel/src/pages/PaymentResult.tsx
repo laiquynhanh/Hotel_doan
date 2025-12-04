@@ -50,20 +50,13 @@ const PaymentResult = () => {
         searchParams.forEach((v,k) => paramsObj[k] = v);
         const result = await paymentService.verifyVNPayReturn(paramsObj);
         if (result.isValid && result.responseCode === '00') {
-          setStatus('success');
-          setMessage('Thanh toán thành công!');
-          
-          // Redirect to additional services page
+          // Redirect to additional services page immediately
           const pendingBookingId = localStorage.getItem('pendingBookingId');
           if (pendingBookingId) {
             localStorage.removeItem('pendingBookingId');
-            setTimeout(() => {
-              navigate(`/additional-services?bookingId=${pendingBookingId}`);
-            }, 2000); // Wait 2 seconds to show success message
+            navigate(`/additional-services?bookingId=${pendingBookingId}`);
           } else if (result.bookingId) {
-            setTimeout(() => {
-              navigate(`/additional-services?bookingId=${result.bookingId}`);
-            }, 2000);
+            navigate(`/additional-services?bookingId=${result.bookingId}`);
           }
         } else {
           setStatus('failed');

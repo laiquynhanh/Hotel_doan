@@ -40,6 +40,12 @@ public class RoomService {
     }
 
     public List<RoomDTO> searchAvailableRooms(LocalDate checkIn, LocalDate checkOut, String roomType) {
+        return searchAvailableRooms(checkIn, checkOut, roomType, null);
+    }
+
+    public List<RoomDTO> searchAvailableRooms(LocalDate checkIn, LocalDate checkOut, String roomType, Integer minCapacity) {
+        System.out.println("[DEBUG] searchAvailableRooms called with checkIn: " + checkIn + ", checkOut: " + checkOut + ", roomType: " + roomType + ", minCapacity: " + minCapacity);
+        
         if (checkIn == null || checkOut == null) {
             throw new RuntimeException("Check-in and check-out dates are required");
         }
@@ -59,17 +65,28 @@ public class RoomService {
         } else {
             candidateRooms = roomRepository.findAll();
         }
+        
+        System.out.println("[DEBUG] Total candidate rooms: " + candidateRooms.size());
 
         return candidateRooms.stream()
                 .map(r -> {
                     RoomDTO dto = convertToDTO(r);
                     dto.setCategory(mapCategory(r.getCategory()));
 
+                    // Check capacity filter
+                    if (minCapacity != null && r.getCapacity() < minCapacity) {
+                        System.out.println("[DEBUG] Room " + r.getRoomNumber() + " (capacity: " + r.getCapacity() + ") filtered out - below minCapacity: " + minCapacity);
+                        return null; // Mark for filtering
+                    }
+
                     // Check for conflicting bookings in requested range
                     try {
                         java.time.LocalDate reqCheckIn = checkIn;
                         java.time.LocalDate reqCheckOut = checkOut;
                         java.util.List<com.example.domain.Booking> conflicts = bookingRepository.findConflictingBookings(r.getId(), reqCheckIn, reqCheckOut);
+                        System.out.println("[DEBUG] Room " + r.getRoomNumber() + " (ID: " + r.getId() + ") has " + 
+                                         (conflicts != null ? conflicts.size() : 0) + " conflicting bookings");
+                        
                         if (conflicts == null || conflicts.isEmpty()) {
                             dto.setAvailable(true);
                             dto.setAvailableFrom(null);
@@ -94,6 +111,7 @@ public class RoomService {
 
                     return dto;
                 })
+                .filter(dto -> dto != null && Boolean.TRUE.equals(dto.getAvailable()))
                 .collect(Collectors.toList());
     }
 

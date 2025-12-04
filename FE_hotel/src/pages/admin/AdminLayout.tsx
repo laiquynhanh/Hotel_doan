@@ -108,6 +108,13 @@ const AdminLayout = () => {
                 <i className="fa fa-star"></i>
                 <span>Đánh Giá</span>
               </NavLink>
+              <NavLink 
+                to="/admin/banners" 
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              >
+                <i className="fa fa-picture-o"></i>
+                <span>Quản Lý Banner</span>
+              </NavLink>
               
               <button className="nav-item" onClick={handleLogout}>
                 <i className="fa fa-sign-out"></i>

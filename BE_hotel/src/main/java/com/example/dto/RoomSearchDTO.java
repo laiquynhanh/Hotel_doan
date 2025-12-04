@@ -6,16 +6,18 @@ public class RoomSearchDTO {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private String roomType;
-    private Integer guests;
+    private Integer minCapacity;
+    private Double minPrice;
+    private Double maxPrice;
 
     public RoomSearchDTO() {
     }
 
-    public RoomSearchDTO(LocalDate checkInDate, LocalDate checkOutDate, String roomType, Integer guests) {
+    public RoomSearchDTO(LocalDate checkInDate, LocalDate checkOutDate, String roomType, Integer minCapacity) {
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.roomType = roomType;
-        this.guests = guests;
+        this.minCapacity = minCapacity;
     }
 
     // Getters and Setters
@@ -28,6 +30,12 @@ public class RoomSearchDTO {
     public String getRoomType() { return roomType; }
     public void setRoomType(String roomType) { this.roomType = roomType; }
 
-    public Integer getGuests() { return guests; }
-    public void setGuests(Integer guests) { this.guests = guests; }
+    public Integer getMinCapacity() { return minCapacity; }
+    public void setMinCapacity(Integer minCapacity) { this.minCapacity = minCapacity; }
+    
+    public Double getMinPrice() { return minPrice; }
+    public void setMinPrice(Double minPrice) { this.minPrice = minPrice; }
+    
+    public Double getMaxPrice() { return maxPrice; }
+    public void setMaxPrice(Double maxPrice) { this.maxPrice = maxPrice; }
 }
