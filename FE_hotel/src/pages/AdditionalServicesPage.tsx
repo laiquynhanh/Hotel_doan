@@ -14,6 +14,7 @@ const AdditionalServicesPage = () => {
   const [searchParams] = useSearchParams();
   const bookingId = searchParams.get('bookingId');
   const [showServices, setShowServices] = useState(false);
+  const [showContinueModal, setShowContinueModal] = useState(false);
   const [selectedServices, setSelectedServices] = useState<SelectedService>({
     airport: false,
     spa: false,
@@ -84,7 +85,11 @@ const AdditionalServicesPage = () => {
                 </div>
                 <button 
                   className="btn-order"
-                  onClick={() => navigate('/room-service')}
+                  onClick={() => {
+                    localStorage.setItem('returnToAdditionalServices', 'true');
+                    localStorage.setItem('currentBookingId', bookingId || '');
+                    navigate('/room-service');
+                  }}
                 >
                   Đặt ngay
                 </button>
@@ -98,7 +103,11 @@ const AdditionalServicesPage = () => {
                 </div>
                 <button 
                   className="btn-order"
-                  onClick={() => navigate('/restaurant-booking')}
+                  onClick={() => {
+                    localStorage.setItem('returnToAdditionalServices', 'true');
+                    localStorage.setItem('currentBookingId', bookingId || '');
+                    navigate('/restaurant-booking');
+                  }}
                 >
                   Đặt bàn
                 </button>
@@ -194,6 +203,125 @@ const AdditionalServicesPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal hỏi tiếp tục đặt dịch vụ */}
+      {showContinueModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '40px 30px',
+            maxWidth: '500px',
+            textAlign: 'center',
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+            animation: 'fadeIn 0.3s ease'
+          }}>
+            <div style={{
+              fontSize: '50px',
+              marginBottom: '20px'
+            }}>
+              ✅
+            </div>
+            <h3 style={{
+              fontSize: '1.5rem',
+              marginBottom: '15px',
+              fontWeight: '600',
+              color: '#333'
+            }}>
+              Đặt hàng thành công!
+            </h3>
+            <p style={{
+              fontSize: '1rem',
+              color: '#666',
+              marginBottom: '30px',
+              lineHeight: '1.5'
+            }}>
+              Bạn có muốn đặt thêm gì không?
+            </p>
+            
+            <div style={{
+              display: 'flex',
+              gap: '15px',
+              justifyContent: 'center'
+            }}>
+              <button
+                onClick={() => {
+                  setShowContinueModal(false);
+                  navigate('/my-bookings');
+                }}
+                style={{
+                  padding: '12px 30px',
+                  borderRadius: '6px',
+                  border: '1px solid #ddd',
+                  backgroundColor: '#f5f5f5',
+                  color: '#333',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#e8e8e8';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f5f5f5';
+                }}
+              >
+                Không, quay về
+              </button>
+              <button
+                onClick={() => {
+                  setShowContinueModal(false);
+                  setShowServices(true);
+                }}
+                style={{
+                  padding: '12px 30px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  backgroundColor: '#2ecc71',
+                  color: 'white',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#27ae60';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = '#2ecc71';
+                }}
+              >
+                Có, tiếp tục
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </div>
   );
 };
