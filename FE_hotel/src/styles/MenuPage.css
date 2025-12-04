@@ -4,17 +4,46 @@
 }
 
 .menu-hero {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('/img/restaurant-hero.jpg') center/cover;
+  background-size: cover;
+  background-position: center;
   padding: 100px 0;
   color: white;
   margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 0;
+}
+
+.menu-hero .container {
+  position: relative;
+  z-index: 1;
 }
 
 .menu-hero h1 {
   font-size: 3rem;
   font-weight: bold;
   margin-bottom: 15px;
+  color: #ffffff !important;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.menu-hero p {
+  color: #ffffff !important;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.menu-hero .text-center {
+  color: #ffffff !important;
 }
 
 .category-filter .category-btn {

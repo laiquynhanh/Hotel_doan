@@ -22,7 +22,11 @@ export const roomService = {
 
   // Tìm phòng theo tiêu chí (wrapper cho searchAvailableRooms)
   searchRooms: async (params: { checkInDate: string; checkOutDate: string; capacity?: number }): Promise<Room[]> => {
-    const response = await api.post('/rooms/search', params);
+    const searchParams: any = {};
+    if (params.checkInDate) searchParams.checkInDate = params.checkInDate;
+    if (params.checkOutDate) searchParams.checkOutDate = params.checkOutDate;
+    if (params.capacity) searchParams.minCapacity = params.capacity;
+    const response = await api.post('/rooms/search', searchParams);
     return response.data;
   },
 

@@ -192,15 +192,6 @@ const ProfilePage = () => {
                     <small className="text-muted">10 số, bắt đầu bằng số 0</small>
                   </div>
 
-                  <div className="mb-3">
-                    <label className="form-label"><strong>Vai trò:</strong></label>
-                    <p>
-                      <span className={`badge bg-${user.role === 'ADMIN' ? 'danger' : 'primary'}`}>
-                        {user.role}
-                      </span>
-                    </p>
-                  </div>
-
                   <div className="d-flex gap-2">
                     <button 
                       type="submit" 
@@ -240,14 +231,6 @@ const ProfilePage = () => {
                   <div className="mb-3">
                     <label className="form-label"><strong>Số điện thoại:</strong></label>
                     <p>{user.phoneNumber || 'Chưa cập nhật'}</p>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label"><strong>Vai trò:</strong></label>
-                    <p>
-                      <span className={`badge bg-${user.role === 'ADMIN' ? 'danger' : 'primary'}`}>
-                        {user.role}
-                      </span>
-                    </p>
                   </div>
                   <button className="btn btn-secondary" onClick={() => navigate(-1)}>
                     Quay lại

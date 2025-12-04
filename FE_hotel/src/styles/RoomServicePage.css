@@ -4,6 +4,54 @@
   padding-bottom: 50px;
 }
 
+/* Beautiful banner with background image */
+.room-service-page .breadcrumb-section {
+  background-image: url('/img/hero/hero-2.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.room-service-page .breadcrumb-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 0;
+}
+
+.room-service-page .breadcrumb-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+.room-service-page .breadcrumb-text h2 {
+  color: #ffffff !important;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  font-weight: 700;
+}
+
+.room-service-page .breadcrumb-text .bt-option a {
+  color: #ffffff !important;
+  font-weight: 600;
+  text-decoration: none;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.room-service-page .breadcrumb-text .bt-option a:after {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.room-service-page .breadcrumb-text .bt-option span {
+  color: #ffffff !important;
+  font-weight: 500;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
 .category-tabs {
   display: flex;
   flex-wrap: wrap;

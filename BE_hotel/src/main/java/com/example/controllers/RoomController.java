@@ -1,13 +1,21 @@
 package com.example.controllers;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.dto.RoomDTO;
 import com.example.dto.RoomSearchDTO;
 import com.example.services.RoomService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -42,7 +50,8 @@ public class RoomController {
             List<RoomDTO> rooms = roomService.searchAvailableRooms(
                     searchDTO.getCheckInDate(),
                     searchDTO.getCheckOutDate(),
-                    searchDTO.getRoomType()
+                    searchDTO.getRoomType(),
+                    searchDTO.getMinCapacity()
             );
             return ResponseEntity.ok(rooms);
         } catch (Exception e) {

@@ -38,6 +38,7 @@ const RestaurantTablesManagement = lazy(() => import('./pages/admin/RestaurantTa
 const TableReservationsManagement = lazy(() => import('./pages/admin/TableReservationsManagement'));
 const CouponManagement = lazy(() => import('./pages/admin/CouponManagement'));
 const ReviewManagement = lazy(() => import('./pages/admin/ReviewManagement'));
+const BannerManagement = lazy(() => import('./pages/admin/BannerManagementPage'));
 import './App.css';
 
 // Loading component
@@ -96,6 +97,8 @@ function App() {
               {/* Coupon & Review Management */}
               <Route path="coupons" element={<CouponManagement />} />
               <Route path="reviews" element={<ReviewManagement />} />
+              {/* Banner Management */}
+              <Route path="banners" element={<BannerManagement />} />
             </Route>
             </Routes>
           </Suspense>

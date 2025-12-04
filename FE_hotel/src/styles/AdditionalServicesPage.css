@@ -130,6 +130,68 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Selectable service styles */
+.service-item.selectable {
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.service-item.selectable:hover {
+  border-color: #dfa974;
+  background: #fffbf5;
+}
+
+.service-item.selectable .service-info h4 {
+  color: #2c3e50 !important;
+}
+
+.service-item.selectable .service-info p {
+  color: #7f8c8d !important;
+}
+
+.service-item.selectable:hover .service-info h4 {
+  color: #2c3e50 !important;
+}
+
+.service-item.selectable:hover .service-info p {
+  color: #7f8c8d !important;
+}
+
+.service-item.selected .service-info h4 {
+  color: #2c3e50 !important;
+}
+
+.service-item.selected .service-info p {
+  color: #7f8c8d !important;
+}
+
+.service-item.selectable.selected {
+  border-color: #28a745;
+  background: #f0f9f4;
+  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.2);
+}
+
+.service-checkbox {
+  font-size: 28px;
+  color: #ccc;
+  transition: all 0.3s;
+}
+
+.service-item.selectable:hover .service-checkbox {
+  color: #dfa974;
+}
+
+.service-item.selected .service-checkbox {
+  color: #28a745 !important;
+  animation: checkPulse 0.4s ease;
+}
+
+@keyframes checkPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
 .service-icon {
   font-size: 40px;
   min-width: 60px;

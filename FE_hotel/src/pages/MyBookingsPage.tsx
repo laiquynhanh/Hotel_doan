@@ -4,6 +4,7 @@ import { bookingService } from '../services/booking.service';
 import { paymentService } from '../services/payment.service';
 import { foodService } from '../services/food.service';
 import { restaurantService } from '../services/restaurant.service';
+import { reviewService } from '../services/review.service';
 import type { BookingDetail } from '../types/booking.types';
 import { BookingStatus } from '../types/booking.types';
 import type { FoodOrder } from '../types/food.types';
@@ -21,6 +22,12 @@ const MyBookingsPage = () => {
   const [foodOrders, setFoodOrders] = useState<FoodOrder[]>([]);
   const [reservations, setReservations] = useState<TableReservation[]>([]);
   const [expandedBookings, setExpandedBookings] = useState<Set<number>>(new Set());
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewingBooking, setReviewingBooking] = useState<BookingDetail | null>(null);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [myReviews, setMyReviews] = useState<any[]>([]);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -53,12 +60,14 @@ const MyBookingsPage = () => {
 
   const fetchAdditionalServices = async () => {
     try {
-      const [orders, reservs] = await Promise.all([
+      const [orders, reservs, reviews] = await Promise.all([
         foodService.getMyOrders().catch(() => []),
-        restaurantService.getMyReservations().catch(() => [])
+        restaurantService.getMyReservations().catch(() => []),
+        reviewService.getMyReviews().catch(() => [])
       ]);
       setFoodOrders(orders);
       setReservations(reservs);
+      setMyReviews(reviews);
     } catch (err) {
       console.error('Error fetching additional services:', err);
     }
@@ -83,7 +92,28 @@ const MyBookingsPage = () => {
     // Filter restaurant reservations by bookingId - only show reservations linked to THIS specific booking
     const reservs = reservations.filter(r => r.bookingId === bookingId);
     
-    return { orders, reservs };
+    // Get premium services from localStorage
+    const premiumServices = getPremiumServices(bookingId);
+    
+    return { orders, reservs, premiumServices };
+  };
+
+  const getPremiumServices = (bookingId: number) => {
+    try {
+      const stored = localStorage.getItem(`booking_${bookingId}_services`);
+      if (stored) {
+        const services = JSON.parse(stored);
+        const selected = [];
+        if (services.airport) selected.push({ icon: '✈️', name: 'Đưa đón sân bay' });
+        if (services.spa) selected.push({ icon: '💆', name: 'Dịch vụ Spa' });
+        if (services.laundry) selected.push({ icon: '🧺', name: 'Giặt ủi' });
+        if (services.tourGuide) selected.push({ icon: '🗺️', name: 'Hướng dẫn viên du lịch' });
+        return selected;
+      }
+    } catch (e) {
+      console.error('Error reading premium services:', e);
+    }
+    return [];
   };
 
   const handleCancelBooking = async (bookingId: number) => {
@@ -115,6 +145,41 @@ const MyBookingsPage = () => {
 
   const canCancel = (status: BookingStatus) => {
     return status === BookingStatus.PENDING || status === BookingStatus.CONFIRMED;
+  };
+
+  const canReview = (status: BookingStatus, bookingId: number) => {
+    if (status !== BookingStatus.CHECKED_OUT) return false;
+    // Kiểm tra xem đã đánh giá booking này chưa
+    const hasReviewed = myReviews.some(review => review.bookingId === bookingId);
+    return !hasReviewed;
+  };
+
+  const openReviewModal = (booking: BookingDetail) => {
+    setReviewingBooking(booking);
+    setReviewRating(5);
+    setReviewComment('');
+    setReviewModalOpen(true);
+  };
+
+  const handleSubmitReview = async () => {
+    if (!reviewingBooking) return;
+    
+    try {
+      setReviewLoading(true);
+      await reviewService.createReview({
+        rating: reviewRating,
+        comment: reviewComment,
+        roomId: reviewingBooking.roomId,
+        bookingId: reviewingBooking.bookingId
+      });
+      alert('Cảm ơn bạn đã đánh giá! Đánh giá của bạn sẽ được duyệt trước khi hiển thị.');
+      setReviewModalOpen(false);
+      fetchMyBookings();
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Không thể gửi đánh giá');
+    } finally {
+      setReviewLoading(false);
+    }
   };
 
   const calculateNights = (checkIn: string, checkOut: string) => {
@@ -273,6 +338,23 @@ const MyBookingsPage = () => {
                             </button>
                           )}
 
+                          {canReview(booking.status, booking.bookingId) && (
+                            <button 
+                              className="btn-review"
+                              onClick={() => openReviewModal(booking)}
+                              style={{ backgroundColor: '#ff7f50', color: 'white', padding: '10px 15px', borderRadius: '4px', border: 'none', cursor: 'pointer' }}
+                            >
+                              <i className="fa fa-star"></i> Đánh giá phòng
+                            </button>
+                          )}
+                          
+                          {booking.status === BookingStatus.CHECKED_OUT && myReviews.some(r => r.bookingId === booking.bookingId) && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 15px', backgroundColor: '#e8f5e9', borderRadius: '4px', color: '#2e7d32' }}>
+                              <i className="fa fa-check-circle"></i>
+                              <span>Bạn đã đánh giá phòng này</span>
+                            </div>
+                          )}
+
                           {/* Hiện nút thanh toán VNPAY cho trạng thái Chờ (PENDING) và tổng tiền > 0 */}
                           {booking.status === BookingStatus.PENDING && booking.totalPrice > 0 && (
                             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -336,8 +418,8 @@ const MyBookingsPage = () => {
                       <i className={`fa fa-${expandedBookings.has(booking.bookingId) ? 'minus' : 'plus'}-circle`}></i>
                       Dịch vụ kèm theo
                       {(() => {
-                        const { orders, reservs } = getBookingServices(booking.bookingId);
-                        const count = orders.length + reservs.length;
+                        const { orders, reservs, premiumServices } = getBookingServices(booking.bookingId);
+                        const count = orders.length + reservs.length + premiumServices.length;
                         return count > 0 ? ` (${count})` : '';
                       })()}
                     </button>
@@ -345,9 +427,9 @@ const MyBookingsPage = () => {
                     {expandedBookings.has(booking.bookingId) && (
                       <div className="services-content">
                         {(() => {
-                          const { orders, reservs } = getBookingServices(booking.bookingId);
+                          const { orders, reservs, premiumServices } = getBookingServices(booking.bookingId);
                           
-                          if (orders.length === 0 && reservs.length === 0) {
+                          if (orders.length === 0 && reservs.length === 0 && premiumServices.length === 0) {
                             return (
                               <div className="no-services">
                                 <i className="fa fa-info-circle"></i>
@@ -358,6 +440,28 @@ const MyBookingsPage = () => {
 
                           return (
                             <>
+                              {/* Premium Services */}
+                              {premiumServices.length > 0 && (
+                                <div className="service-section">
+                                  <h6><i className="fa fa-star"></i> Dịch vụ Premium ({premiumServices.length})</h6>
+                                  <div className="service-items">
+                                    {premiumServices.map((service, idx) => (
+                                      <div key={idx} className="service-item premium-service">
+                                        <div className="service-header">
+                                          <span className="service-icon-inline">{service.icon}</span>
+                                          <span className="service-name">{service.name}</span>
+                                          <span className="badge badge-info">Đã yêu cầu</span>
+                                        </div>
+                                        <div className="service-note">
+                                          <i className="fa fa-info-circle"></i>
+                                          <span>Lễ tân sẽ liên hệ với bạn để xác nhận chi tiết</span>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
                               {/* Food Orders */}
                               {orders.length > 0 && (
                                 <div className="service-section">
@@ -442,6 +546,65 @@ const MyBookingsPage = () => {
           )}
         </div>
       </div>
+
+      {/* Review Modal */}
+      {reviewModalOpen && reviewingBooking && (
+        <div className="modal" style={{ display: 'block', position: 'fixed', zIndex: 1000, left: 0, top: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-content" style={{ backgroundColor: '#fefefe', margin: '5% auto', padding: '20px', border: '1px solid #888', width: '500px', borderRadius: '8px' }}>
+            <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0 }}>Đánh giá phòng {reviewingBooking.roomNumber}</h3>
+              <button onClick={() => setReviewModalOpen(false)} style={{ fontSize: '24px', background: 'none', border: 'none', cursor: 'pointer' }}>×</button>
+            </div>
+
+            <div className="modal-body">
+              <div className="mb-3">
+                <label className="form-label"><strong>Đánh giá:</strong></label>
+                <div style={{ display: 'flex', gap: '10px', fontSize: '28px' }}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <i 
+                      key={star}
+                      className={`icon_star ${star <= reviewRating ? '' : '-half_alt'}`}
+                      onClick={() => setReviewRating(star)}
+                      style={{ cursor: 'pointer', color: star <= reviewRating ? '#ffb30f' : '#ccc' }}
+                    ></i>
+                  ))}
+                </div>
+                <small className="text-muted">{reviewRating}/5 sao</small>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label"><strong>Nhận xét:</strong></label>
+                <textarea
+                  className="form-control"
+                  rows={4}
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder="Chia sẻ trải nghiệm của bạn..."
+                  maxLength={500}
+                />
+                <small className="text-muted">{reviewComment.length}/500</small>
+              </div>
+            </div>
+
+            <div className="modal-footer" style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '20px' }}>
+              <button 
+                className="btn btn-secondary"
+                onClick={() => setReviewModalOpen(false)}
+                disabled={reviewLoading}
+              >
+                Hủy
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handleSubmitReview}
+                disabled={reviewLoading || !reviewComment.trim()}
+              >
+                {reviewLoading ? 'Đang gửi...' : 'Gửi đánh giá'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

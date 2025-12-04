@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { roomService } from '../services/room.service';
 import type { Room, RoomType } from '../types/room.types';
 import { formatPrice } from '../utils/currency';
 import '../styles/SearchRoomsPage.css';
-// useLocation may be used later for parsing query params
 
 const SearchRoomsPage: React.FC = () => {
+  const location = useLocation();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -19,10 +19,51 @@ const SearchRoomsPage: React.FC = () => {
   const [maxPrice, setMaxPrice] = useState('');
   const [capacity, setCapacity] = useState('');
 
-  // Load all rooms on mount
+  // Load rooms on mount or when URL params change
   useEffect(() => {
-    loadAllRooms();
-  }, []);
+    const params = new URLSearchParams(location.search);
+    const urlCheckIn = params.get('checkInDate');
+    const urlCheckOut = params.get('checkOutDate');
+    const urlCapacity = params.get('minCapacity');
+    
+    // Set state from URL params
+    if (urlCheckIn) setCheckInDate(urlCheckIn);
+    if (urlCheckOut) setCheckOutDate(urlCheckOut);
+    if (urlCapacity) setCapacity(urlCapacity);
+    
+    // If we have date params, do a search; otherwise load all
+    if (urlCheckIn && urlCheckOut) {
+      searchFromParams(params);
+    } else {
+      loadAllRooms();
+    }
+  }, [location.search]);
+  
+  const searchFromParams = async (params: URLSearchParams) => {
+    try {
+      setLoading(true);
+      const searchParams: any = {};
+      
+      const checkIn = params.get('checkInDate');
+      const checkOut = params.get('checkOutDate');
+      const minCap = params.get('minCapacity');
+      
+      if (checkIn) searchParams.checkInDate = checkIn;
+      if (checkOut) searchParams.checkOutDate = checkOut;
+      if (minCap) searchParams.minCapacity = parseInt(minCap);
+      
+      console.log('[DEBUG SearchRoomsPage] Searching with params:', searchParams);
+      const data = await roomService.searchAvailableRooms(searchParams);
+      console.log('[DEBUG SearchRoomsPage] Search results:', data.length, 'rooms');
+      setRooms(data);
+      setError('');
+    } catch (err: any) {
+      setError(err.response?.data || 'Lỗi khi tìm kiếm phòng');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadAllRooms = async () => {
     try {

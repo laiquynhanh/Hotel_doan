@@ -12,6 +12,7 @@ const MenuPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [bannerImage, setBannerImage] = useState('/img/hero/hero-3.jpg');
 
   const categories = [
     { value: 'ALL', label: 'Tất Cả', icon: '🍽️' },
@@ -23,6 +24,19 @@ const MenuPage = () => {
   ];
 
   useEffect(() => {
+    // Load banner config from localStorage
+    const config = localStorage.getItem('bannerConfig');
+    if (config) {
+      try {
+        const parsed = JSON.parse(config);
+        if (parsed.menu) {
+          setBannerImage(parsed.menu);
+        }
+      } catch (e) {
+        console.error('Error parsing banner config:', e);
+      }
+    }
+    
     loadFoodItems();
   }, []);
 
@@ -79,7 +93,7 @@ const MenuPage = () => {
   return (
     <div className="menu-page">
       {/* Hero Section */}
-      <section className="menu-hero">
+      <section className="menu-hero" style={{ backgroundImage: `url(${bannerImage})` }}>
         <div className="container">
           <h1 className="text-center">Thực Đơn Khách Sạn</h1>
           <p className="text-center lead">Khám phá các món ăn ngon và dịch vụ ẩm thực cao cấp</p>

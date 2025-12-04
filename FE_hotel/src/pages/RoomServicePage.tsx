@@ -159,6 +159,23 @@ const RoomServicePage = () => {
 
   return (
     <div className="room-service-page">
+      {/* Breadcrumb Banner */}
+      <div className="breadcrumb-section">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="breadcrumb-text">
+                <h2>Thực Đơn Khách Sạn</h2>
+                <div className="bt-option">
+                  <a href="/">Trang Chủ</a>
+                  <span>Room Service</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="container my-5">
         <h2 className="text-center mb-4">Đặt Món Room Service</h2>
 

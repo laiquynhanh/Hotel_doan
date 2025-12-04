@@ -2,11 +2,24 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import '../styles/AdditionalServicesPage.css';
 
+interface SelectedService {
+  airport: boolean;
+  spa: boolean;
+  laundry: boolean;
+  tourGuide: boolean;
+}
+
 const AdditionalServicesPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const bookingId = searchParams.get('bookingId');
   const [showServices, setShowServices] = useState(false);
+  const [selectedServices, setSelectedServices] = useState<SelectedService>({
+    airport: false,
+    spa: false,
+    laundry: false,
+    tourGuide: false
+  });
 
   useEffect(() => {
     // Nếu không có bookingId, redirect về home
@@ -15,7 +28,19 @@ const AdditionalServicesPage = () => {
     }
   }, [bookingId, navigate]);
 
+  const toggleService = (service: keyof SelectedService) => {
+    setSelectedServices(prev => ({
+      ...prev,
+      [service]: !prev[service]
+    }));
+  };
+
   const handleConfirm = () => {
+    // Lưu các dịch vụ đã chọn vào localStorage hoặc gửi lên server
+    if (Object.values(selectedServices).some(v => v)) {
+      localStorage.setItem(`booking_${bookingId}_services`, JSON.stringify(selectedServices));
+      alert('Đã ghi nhận yêu cầu dịch vụ của bạn!\nLễ tân sẽ liên hệ với bạn sớm nhất.');
+    }
     navigate('/my-bookings');
   };
 
@@ -79,40 +104,76 @@ const AdditionalServicesPage = () => {
                 </button>
               </div>
 
-              <div className="service-item">
+              <div 
+                className={`service-item selectable ${selectedServices.airport ? 'selected' : ''}`}
+                onClick={() => toggleService('airport')}
+              >
                 <div className="service-icon">✈️</div>
                 <div className="service-info">
                   <h4>Đưa đón sân bay</h4>
                   <p>Dịch vụ đưa đón tận nơi, tiện lợi và an toàn</p>
                 </div>
-                <div className="service-badge">Liên hệ lễ tân</div>
+                <div className="service-checkbox">
+                  {selectedServices.airport ? (
+                    <i className="fa fa-check-circle"></i>
+                  ) : (
+                    <i className="fa fa-circle-o"></i>
+                  )}
+                </div>
               </div>
 
-              <div className="service-item">
+              <div 
+                className={`service-item selectable ${selectedServices.spa ? 'selected' : ''}`}
+                onClick={() => toggleService('spa')}
+              >
                 <div className="service-icon">💆</div>
                 <div className="service-info">
                   <h4>Dịch vụ Spa</h4>
                   <p>Thư giãn với các liệu trình chăm sóc chuyên nghiệp</p>
                 </div>
-                <div className="service-badge">Liên hệ lễ tân</div>
+                <div className="service-checkbox">
+                  {selectedServices.spa ? (
+                    <i className="fa fa-check-circle"></i>
+                  ) : (
+                    <i className="fa fa-circle-o"></i>
+                  )}
+                </div>
               </div>
 
-              <div className="service-item">
+              <div 
+                className={`service-item selectable ${selectedServices.laundry ? 'selected' : ''}`}
+                onClick={() => toggleService('laundry')}
+              >
                 <div className="service-icon">🧺</div>
                 <div className="service-info">
                   <h4>Giặt ủi</h4>
                   <p>Dịch vụ giặt ủi nhanh chóng, chất lượng cao</p>
                 </div>
-                <div className="service-badge">Liên hệ lễ tân</div>
+                <div className="service-checkbox">
+                  {selectedServices.laundry ? (
+                    <i className="fa fa-check-circle"></i>
+                  ) : (
+                    <i className="fa fa-circle-o"></i>
+                  )}
+                </div>
               </div>
 
-              <div className="service-item">
+              <div 
+                className={`service-item selectable ${selectedServices.tourGuide ? 'selected' : ''}`}
+                onClick={() => toggleService('tourGuide')}
+              >
                 <div className="service-icon">🗺️</div>
                 <div className="service-info">
                   <h4>Hướng dẫn viên du lịch</h4>
                   <p>Khám phá thành phố cùng hướng dẫn viên địa phương</p>
                 </div>
-                <div className="service-badge">Liên hệ lễ tân</div>
+                <div className="service-checkbox">
+                  {selectedServices.tourGuide ? (
+                    <i className="fa fa-check-circle"></i>
+                  ) : (
+                    <i className="fa fa-circle-o"></i>
+                  )}
+                </div>
               </div>
             </div>
           )}

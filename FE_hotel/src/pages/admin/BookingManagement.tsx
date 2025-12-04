@@ -5,6 +5,33 @@ import type { BookingStatus } from '../../types/booking.types';
 // Admin view uses BookingDTO, which differs from BookingDetail (user view)
 // BookingDTO has `id` and `userName`; BookingDetail has `bookingId` and `username`
 // Previous implementation mistakenly used BookingDetail causing undefined IDs.
+
+interface SelectedService {
+  airport?: boolean;
+  spa?: boolean;
+  laundry?: boolean;
+  tourGuide?: boolean;
+}
+
+const getPremiumServices = (bookingId: number): Array<{icon: string; name: string}> => {
+  const stored = localStorage.getItem(`booking_${bookingId}_services`);
+  if (!stored) return [];
+  
+  try {
+    const services: SelectedService = JSON.parse(stored);
+    const result: Array<{icon: string; name: string}> = [];
+    
+    if (services.airport) result.push({ icon: '✈️', name: 'Đưa đón sân bay' });
+    if (services.spa) result.push({ icon: '💆', name: 'Dịch vụ Spa' });
+    if (services.laundry) result.push({ icon: '👔', name: 'Giặt ủi' });
+    if (services.tourGuide) result.push({ icon: '🗺️', name: 'Hướng dẫn viên du lịch' });
+    
+    return result;
+  } catch {
+    return [];
+  }
+};
+
 const BookingManagement = () => {
   const [bookings, setBookings] = useState<AdminBookingDTO[]>([]);
   const [loading, setLoading] = useState(false);
@@ -119,10 +146,15 @@ const BookingManagement = () => {
                 <td>{booking.totalPrice.toLocaleString('vi-VN')} VNĐ</td>
                 <td>
                   <div style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
-                    <div>🚗 Đưa đón: <strong>{booking.airportPickup ? '✓' : '✗'}</strong></div>
-                    <div>💆 Spa: <strong>{booking.spaService ? '✓' : '✗'}</strong></div>
-                    <div>👔 Giặt ủi: <strong>{booking.laundryService ? '✓' : '✗'}</strong></div>
-                    <div>🗺️ HDV: <strong>{booking.tourGuide ? '✓' : '✗'}</strong></div>
+                    {(() => {
+                      const premiumServices = getPremiumServices(booking.id);
+                      if (premiumServices.length === 0) {
+                        return <div style={{color: '#999'}}>Không có</div>;
+                      }
+                      return premiumServices.map((service, idx) => (
+                        <div key={idx}>{service.icon} {service.name}</div>
+                      ));
+                    })()}
                   </div>
                 </td>
                 <td>

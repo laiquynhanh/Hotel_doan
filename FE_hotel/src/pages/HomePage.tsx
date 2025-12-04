@@ -6,8 +6,17 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [checkInDate, setCheckInDate] = useState<string>('');
   const [checkOutDate, setCheckOutDate] = useState<string>('');
+  const [numberOfGuests, setNumberOfGuests] = useState<string>('1');
+  const [numberOfRooms, setNumberOfRooms] = useState<string>('1');
   const dateInRef = useRef<HTMLInputElement | null>(null);
   const dateOutRef = useRef<HTMLInputElement | null>(null);
+  
+  // Load banner images from localStorage
+  const [heroBanners, setHeroBanners] = useState<string[]>([
+    '/img/hero/hero-1.jpg',
+    '/img/hero/hero-2.jpg',
+    '/img/hero/hero-3.jpg'
+  ]);
 
   const formatToIso = (val: string) => {
     // Accepts dd-mm-yy or dd-mm-yyyy and returns yyyy-mm-dd; if already yyyy-mm-dd, return as-is
@@ -25,13 +34,9 @@ const HomePage = () => {
     e.preventDefault();
     const dateInEl = document.getElementById('date-in') as HTMLInputElement | null;
     const dateOutEl = document.getElementById('date-out') as HTMLInputElement | null;
-    const guestEl = document.getElementById('guest') as HTMLSelectElement | null;
-    const roomEl = document.getElementById('room') as HTMLSelectElement | null;
 
     const rawIn = dateInEl?.value || '';
     const rawOut = dateOutEl?.value || '';
-    const guest = guestEl?.value || '';
-    const rooms = roomEl?.value || '';
 
     const checkInDate = formatToIso(rawIn);
     const checkOutDate = formatToIso(rawOut);
@@ -39,13 +44,26 @@ const HomePage = () => {
     const params = new URLSearchParams();
     if (checkInDate) params.append('checkInDate', checkInDate);
     if (checkOutDate) params.append('checkOutDate', checkOutDate);
-    if (guest) params.append('minCapacity', guest);
-    if (rooms) params.append('rooms', rooms);
+    if (numberOfGuests) params.append('minCapacity', numberOfGuests);
+    if (numberOfRooms) params.append('rooms', numberOfRooms);
 
     navigate(`/search-rooms?${params.toString()}`);
   };
 
   useEffect(() => {
+    // Load banner config from localStorage
+    const config = localStorage.getItem('bannerConfig');
+    if (config) {
+      try {
+        const parsed = JSON.parse(config);
+        if (parsed.homepage && Array.isArray(parsed.homepage)) {
+          setHeroBanners(parsed.homepage);
+        }
+      } catch (e) {
+        console.error('Error parsing banner config:', e);
+      }
+    }
+    
     // Initialize jQuery plugins after component mounts
     if (typeof window !== 'undefined' && (window as any).$) {
       const $ = (window as any).$;
@@ -104,9 +122,9 @@ const HomePage = () => {
       <section className="hero-section">
         {/* Background slider (absolute, full section) */}
         <div className="hero-slider owl-carousel">
-          <div className="hs-item set-bg" style={{ backgroundImage: 'url(/img/hero/hero-1.jpg)' }}></div>
-          <div className="hs-item set-bg" style={{ backgroundImage: 'url(/img/hero/hero-2.jpg)' }}></div>
-          <div className="hs-item set-bg" style={{ backgroundImage: 'url(/img/hero/hero-3.jpg)' }}></div>
+          {heroBanners.map((img, index) => (
+            <div key={index} className="hs-item set-bg" style={{ backgroundImage: `url(${img})` }}></div>
+          ))}
         </div>
 
         {/* Foreground content overlay (matches Sona structure) */}
@@ -185,18 +203,28 @@ const HomePage = () => {
                     ></i>
                   </div>
                   <div className="select-option">
-                    <label htmlFor="guest">Khách:</label>
-                    <select id="guest">
-                      <option value="2">2 Người Lớn</option>
-                      <option value="3">3 Người Lớn</option>
-                    </select>
+                    <label htmlFor="guest">Số Khách:</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="guest"
+                      value={numberOfGuests}
+                      onChange={(e) => setNumberOfGuests(e.target.value)}
+                      min="1"
+                      placeholder="Số người"
+                    />
                   </div>
                   <div className="select-option">
-                    <label htmlFor="room">Phòng:</label>
-                    <select id="room">
-                      <option value="1">1 Phòng</option>
-                      <option value="2">2 Phòng</option>
-                    </select>
+                    <label htmlFor="room">Số Phòng:</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="room"
+                      value={numberOfRooms}
+                      onChange={(e) => setNumberOfRooms(e.target.value)}
+                      min="1"
+                      placeholder="Số phòng"
+                    />
                   </div>
                   <button type="submit">Kiểm Tra Phòng Trống</button>
                 </form>
