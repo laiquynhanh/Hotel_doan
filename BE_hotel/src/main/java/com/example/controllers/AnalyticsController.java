@@ -105,4 +105,50 @@ public class AnalyticsController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/revenue-breakdown")
+    public ResponseEntity<?> getRevenueBreakdown(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        try {
+            LocalDate start = startDate != null ? LocalDate.parse(startDate) : LocalDate.now().minusDays(30);
+            LocalDate end = endDate != null ? LocalDate.parse(endDate) : LocalDate.now();
+            
+            return ResponseEntity.ok(analyticsService.getRevenueBreakdown(start, end));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/food-revenue")
+    public ResponseEntity<?> getFoodRevenue(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        try {
+            LocalDate start = startDate != null ? LocalDate.parse(startDate) : LocalDate.now().minusDays(30);
+            LocalDate end = endDate != null ? LocalDate.parse(endDate) : LocalDate.now();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("foodRevenue", analyticsService.getFoodOrderRevenue(start, end));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/additional-services-revenue")
+    public ResponseEntity<?> getAdditionalServicesRevenue(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        try {
+            LocalDate start = startDate != null ? LocalDate.parse(startDate) : LocalDate.now().minusDays(30);
+            LocalDate end = endDate != null ? LocalDate.parse(endDate) : LocalDate.now();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("additionalServicesRevenue", analyticsService.getAdditionalServicesRevenue(start, end));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }
