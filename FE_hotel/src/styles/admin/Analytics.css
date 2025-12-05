@@ -402,3 +402,61 @@
     font-size: 11px;
   }
 }
+
+/* Revenue Breakdown Grid */
+.revenue-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.revenue-breakdown-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #0d6efd;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.revenue-breakdown-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.revenue-breakdown-card h4 {
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.revenue-breakdown-card.room-revenue {
+  border-left-color: #28a745;
+}
+
+.revenue-breakdown-card.food-revenue {
+  border-left-color: #17a2b8;
+}
+
+.revenue-breakdown-card.service-revenue {
+  border-left-color: #ffc107;
+}
+
+.revenue-amount {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #0d6efd;
+  margin: 10px 0;
+}
+
+.revenue-percentage {
+  font-size: 0.9rem;
+  color: #495057;
+  background: #e9ecef;
+  padding: 5px 10px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 10px;
+}

@@ -30,6 +30,16 @@ interface CouponStats {
   usageByCode: Record<string, number>;
 }
 
+interface RevenueBreakdown {
+  roomRevenue: number;
+  foodRevenue: number;
+  additionalServicesRevenue: number;
+  totalRevenue: number;
+  roomPercentage: number;
+  foodPercentage: number;
+  additionalServicesPercentage: number;
+}
+
 const Analytics = () => {
   const [loading, setLoading] = useState(true);
   const [overview, setOverview] = useState<OverviewData | null>(null);
@@ -37,6 +47,7 @@ const Analytics = () => {
   const [revenueByMonth, setRevenueByMonth] = useState<MonthRevenue[]>([]);
   const [bookingsByStatus, setBookingsByStatus] = useState<Record<string, number>>({});
   const [couponStats, setCouponStats] = useState<CouponStats | null>(null);
+  const [revenueBreakdown, setRevenueBreakdown] = useState<RevenueBreakdown | null>(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const currentYear = new Date().getFullYear();
   const startYear = 2024; // earliest year to show; extend if needed
@@ -50,16 +61,18 @@ const Analytics = () => {
     try {
       setLoading(true);
       
-      const [overviewRes, roomsRes, revenueRes, statusRes, couponRes] = await Promise.all([
+      const [overviewRes, roomsRes, revenueRes, statusRes, couponRes, breakdownRes] = await Promise.all([
         adminService.getAnalyticsOverview(),
         adminService.getPopularRooms(),
         adminService.getRevenueByMonth(selectedYear),
         adminService.getBookingsByStatus(),
-        adminService.getCouponUsage()
+        adminService.getCouponUsage(),
+        adminService.getRevenueBreakdown()
       ]);
 
       setOverview(overviewRes);
       setPopularRooms(roomsRes);
+      setRevenueBreakdown(breakdownRes);
 
       // Normalize monthly revenue to ensure 12 months with zeros when missing
       const normalized = Array.from({ length: 12 }, (_, idx) => {
@@ -147,6 +160,29 @@ const Analytics = () => {
               <p className="kpi-value">{formatCurrency(overview.averageBookingValue)}</p>
               <span className="kpi-label">30 ngày gần đây</span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Revenue Breakdown */}
+      {revenueBreakdown && (
+        <div className="revenue-breakdown-grid">
+          <div className="revenue-breakdown-card room-revenue">
+            <h4>💰 Doanh Thu Phòng</h4>
+            <p className="revenue-amount">{formatCurrency(revenueBreakdown.roomRevenue)}</p>
+            <div className="revenue-percentage">{revenueBreakdown.roomPercentage?.toFixed(1)}%</div>
+          </div>
+
+          <div className="revenue-breakdown-card food-revenue">
+            <h4>🍽️ Doanh Thu Đồ Ăn</h4>
+            <p className="revenue-amount">{formatCurrency(revenueBreakdown.foodRevenue)}</p>
+            <div className="revenue-percentage">{revenueBreakdown.foodPercentage?.toFixed(1)}%</div>
+          </div>
+
+          <div className="revenue-breakdown-card service-revenue">
+            <h4>🎯 Doanh Thu Dịch Vụ</h4>
+            <p className="revenue-amount">{formatCurrency(revenueBreakdown.additionalServicesRevenue)}</p>
+            <div className="revenue-percentage">{revenueBreakdown.additionalServicesPercentage?.toFixed(1)}%</div>
           </div>
         </div>
       )}

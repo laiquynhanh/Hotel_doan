@@ -243,5 +243,29 @@ export const adminService = {
     if (endDate) params.append('endDate', endDate);
     const response = await api.get(`/admin/analytics/coupon-usage?${params.toString()}`);
     return response.data;
+  },
+
+  getRevenueBreakdown: async (startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    const response = await api.get(`/admin/analytics/revenue-breakdown?${params.toString()}`);
+    return response.data;
+  },
+
+  getFoodRevenue: async (startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    const response = await api.get(`/admin/analytics/food-revenue?${params.toString()}`);
+    return response.data;
+  },
+
+  getAdditionalServicesRevenue: async (startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    const response = await api.get(`/admin/analytics/additional-services-revenue?${params.toString()}`);
+    return response.data;
   }
 };
