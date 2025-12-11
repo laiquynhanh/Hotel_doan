@@ -1,3 +1,4 @@
+// Repository quản lý Payment: query thanh toán theo booking, trạng thái, mã giao dịch
 package com.example.repositories;
 
 import java.util.List;

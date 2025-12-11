@@ -1,3 +1,12 @@
+// ========================================
+// CONTROLLER NHÀ HÀNG (Restaurant Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Tạo đặt bàn mới (/reservations)
+// - Hủy đặt bàn (/reservations/{id}/cancel)
+// - Xem danh sách đặt bàn của user
+// - Tìm bàn trống theo ngày/giờ
+
 package com.example.controllers;
 
 import java.time.LocalDate;

@@ -1,3 +1,4 @@
+// Repository quản lý Coupon: query mã giảm theo code, trạng thái, ngày hẽạn
 package com.example.repositories;
 
 import java.util.Optional;

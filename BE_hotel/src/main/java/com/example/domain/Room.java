@@ -1,3 +1,4 @@
+// Entity phòng: lưu số phòng, loại, giá, dung tích, kích thước, tiển ích, hình ảnh, trạng thái
 package com.example.domain;
 
 import java.math.BigDecimal;

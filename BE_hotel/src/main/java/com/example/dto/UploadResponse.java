@@ -1,3 +1,4 @@
+// DTO trả về sau khi upload file (filename, url, contentType, size)
 package com.example.dto;
 
 public class UploadResponse {

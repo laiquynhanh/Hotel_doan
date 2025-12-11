@@ -1,3 +1,4 @@
+// Repository quản lý RestaurantTable: query bàn nhà hàng theo số, dung tích, vị trí
 package com.example.repositories;
 
 import java.util.List;

@@ -1,14 +1,34 @@
+// ========================================
+// CONTROLLER ĐÁNH GIÁ (Review Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Tạo đánh giá (/reviews)
+// - Lấy đánh giá theo booking (/reviews/by-booking/{id})
+// - Lấy đánh giá theo room (/reviews/by-room/{id})
+// - Tính trung bình sao phòng
+// - Xóa đánh giá - chỉ admin/tác giả
+// - Yêu cầu JWT token để đánh giá
+
 package com.example.controllers;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dto.ReviewDTO;
 import com.example.services.JwtService;
 import com.example.services.ReviewService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")

@@ -1,4 +1,21 @@
+// ========================================
+// DỊCH VỤ ĐÁNH GIÁ (Review Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Tạo đánh giá mới (validate điểm, comment)
+// - Lấy đánh giá theo phòng/booking
+// - Tính sao trung bình phòng
+// - Xóa đánh giá (check quyền)
+// - Update đánh giá
+
 package com.example.services;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.domain.Booking;
 import com.example.domain.Review;
@@ -9,12 +26,6 @@ import com.example.repositories.BookingRepository;
 import com.example.repositories.ReviewRepository;
 import com.example.repositories.RoomRepository;
 import com.example.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ReviewService {
@@ -72,7 +83,7 @@ public class ReviewService {
                     .orElseThrow(() -> new RuntimeException("Booking not found"));
             
             if (!booking.getUser().getId().equals(userId)) {
-                throw new RuntimeException("Bạn không có quyền đánh giá booking này");
+                throw new IllegalArgumentException("Bạn không có quyền đánh giá booking này");
             }
         }
 

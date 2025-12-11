@@ -1,3 +1,4 @@
+// DTO đặt bàn nhà hàng (ID, bàn, ngày, giờ, số khách, trạng thái)
 package com.example.dto;
 
 import java.time.LocalDate;

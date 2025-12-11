@@ -1,3 +1,4 @@
+// Entity mã giảm giá: lưu code, kiểu discount (%), nguồn thanh toán, ngày hết hạn
 package com.example.domain;
 
 import java.math.BigDecimal;

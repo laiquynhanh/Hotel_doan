@@ -1,3 +1,4 @@
+// Entity đặt bàn: lưu bàn, user, booking, ngày/giờ, số khách, trạng thái
 package com.example.domain;
 
 import java.time.LocalDate;

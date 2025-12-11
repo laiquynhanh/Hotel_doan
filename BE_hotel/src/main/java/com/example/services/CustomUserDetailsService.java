@@ -1,3 +1,12 @@
+// ========================================
+// DỊCH VỤ CHI TIẾT NGƯỜI DÙNG (Custom User Details Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Load thông tin người dùng từ database
+// - Cấp quyền (Authority/Role) cho người dùng
+// - Xác thực trong Spring Security
+// - Hỗ trợ đăng nhập theo username
+
 package com.example.services;
 
 import java.util.Collections;

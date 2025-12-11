@@ -1,3 +1,4 @@
+// DTO trả về user của API (ID, email, tên, role, ảnh)
 package com.example.dto;
 
 import com.example.domain.Role;

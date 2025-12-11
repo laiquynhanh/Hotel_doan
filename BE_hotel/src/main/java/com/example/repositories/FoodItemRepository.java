@@ -1,3 +1,4 @@
+// Repository quản lý FoodItem: query mục thực đơn theo danh mục, tên, giá
 package com.example.repositories;
 
 import java.util.List;

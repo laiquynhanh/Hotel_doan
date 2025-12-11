@@ -1,3 +1,4 @@
+// Repository quản lý User: query theo username, email, check tồn tại
 package com.example.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;

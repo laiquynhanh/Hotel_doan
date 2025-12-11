@@ -1,3 +1,4 @@
+// Repository quản lý PasswordResetToken: query token theo UUID, user, check hẽạn
 package com.example.repositories;
 
 import java.util.Optional;

@@ -1,3 +1,4 @@
+// Repository quản lý Category: query danh mục theo tên, slug, trạng thái
 package com.example.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;

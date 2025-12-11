@@ -1,3 +1,13 @@
+// ========================================
+// DỊCH VỤ ĐẶT PHÒNG (Booking Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Tạo booking mới (validate ngày, số khách, phòng)
+// - Hủy booking (check trạng thái)
+// - Cập nhật trạng thái booking
+// - Tìm booking theo user/ID
+// - Kiểm tra phòng trống trong khoảng thời gian
+
 package com.example.services;
 
 import java.math.BigDecimal;
@@ -63,19 +73,19 @@ public class BookingService {
     public BookingDTO createBooking(Long userId, BookingCreateDTO bookingDTO) {
         // Validate dates
         if (bookingDTO.getCheckInDate().isBefore(LocalDate.now())) {
-            throw new RuntimeException("Check-in date cannot be in the past");
+            throw new IllegalArgumentException("Check-in date cannot be in the past");
         }
         if (bookingDTO.getCheckOutDate().isBefore(bookingDTO.getCheckInDate())) {
-            throw new RuntimeException("Check-out date must be after check-in date");
+            throw new IllegalArgumentException("Check-out date must be after check-in date");
         }
 
         // Check user exists
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // Check room exists
         Room room = roomRepository.findById(bookingDTO.getRoomId())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
         // Check room availability
         List<Booking> conflicts = bookingRepository.findConflictingBookings(
@@ -85,12 +95,12 @@ public class BookingService {
         );
 
         if (!conflicts.isEmpty()) {
-            throw new RuntimeException("Room is not available for the selected dates");
+            throw new IllegalArgumentException("Room is not available for the selected dates");
         }
 
         // Check capacity
         if (bookingDTO.getNumberOfGuests() > room.getCapacity()) {
-            throw new RuntimeException("Number of guests exceeds room capacity");
+            throw new IllegalArgumentException("Number of guests exceeds room capacity");
         }
 
         // Calculate total price
@@ -172,15 +182,15 @@ public class BookingService {
 
     public void cancelBooking(Long id, Long userId) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
 
         if (!booking.getUser().getId().equals(userId)) {
-            throw new RuntimeException("You are not authorized to cancel this booking");
+            throw new IllegalArgumentException("You are not authorized to cancel this booking");
         }
 
         if (booking.getStatus() == BookingStatus.CHECKED_IN || 
             booking.getStatus() == BookingStatus.CHECKED_OUT) {
-            throw new RuntimeException("Cannot cancel a booking that is already checked-in or checked-out");
+            throw new IllegalArgumentException("Cannot cancel a booking that is already checked-in or checked-out");
         }
 
         booking.setStatus(BookingStatus.CANCELLED);

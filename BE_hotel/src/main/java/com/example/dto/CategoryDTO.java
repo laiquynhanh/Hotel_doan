@@ -1,3 +1,4 @@
+// DTO danh mục (id, tên, slug, mô tả, hình ảnh, trạng thái)
 package com.example.dto;
 
 public class CategoryDTO {

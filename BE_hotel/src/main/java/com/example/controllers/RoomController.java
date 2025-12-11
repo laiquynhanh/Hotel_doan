@@ -1,3 +1,12 @@
+// ========================================
+// CONTROLLER PHÒNG (Room Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Lấy danh sách phòng (/rooms)
+// - Tìm kiếm phòng trống (/rooms/search)
+// - Lấy chi tiết phòng (/rooms/{id})
+// - Công khai cho tất cả user
+
 package com.example.controllers;
 
 import java.util.List;

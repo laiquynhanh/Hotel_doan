@@ -1,3 +1,4 @@
+// Entity bàn nhà hàng: lưu số bàn, dung tích, vị trí, trạng thái
 package com.example.domain;
 
 import java.time.LocalDateTime;

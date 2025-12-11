@@ -1,3 +1,4 @@
+// CẤU HÌNH CORS: cho phép frontend (localhost:5173, 3000...) gọi API backend
 package com.example.config;
 
 import java.util.Arrays;

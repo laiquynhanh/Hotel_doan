@@ -1,3 +1,4 @@
+// DTO chứa thông tin đặt phòng (ID, khách, phòng, ngày, giá, trạng thái)
 package com.example.dto;
 
 import java.math.BigDecimal;

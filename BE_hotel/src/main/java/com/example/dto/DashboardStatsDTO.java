@@ -1,3 +1,4 @@
+// DTO thống kê dashboard (doanh thu, đặt phòng, hàng tống, đánh giá)
 package com.example.dto;
 
 public class DashboardStatsDTO {

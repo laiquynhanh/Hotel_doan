@@ -1,3 +1,12 @@
+// ========================================
+// CONTROLLER DANH MỤC (Category Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Lấy danh sách danh mục (/categories)
+// - Lấy chi tiết danh mục (/categories/{id})
+// - Lấy danh sách thực đơn theo danh mục
+// - Tìm kiếm danh mục
+
 package com.example.controllers;
 
 import java.util.List;

@@ -1,3 +1,4 @@
+// DTO thông tin phòng (ID, loại, giá, dung tích, kích thước, tiển ích, trạng thái)
 package com.example.dto;
 
 import java.math.BigDecimal;

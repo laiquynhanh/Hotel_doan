@@ -1,3 +1,4 @@
+// Entity đặt phòng: lưu thông tin đặt phòng, khách, phòng, ngày check-in/out, giá, coupon, dịch vụ
 package com.example.domain;
 
 import java.math.BigDecimal;

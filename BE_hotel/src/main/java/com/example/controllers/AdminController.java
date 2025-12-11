@@ -1,3 +1,14 @@
+// ========================================
+// CONTROLLER ADMIN (Admin Controller)
+// ========================================
+// Xử lý các endpoint quản trị liên quan đến:
+// - Dashboard thống kê (/admin/dashboard)
+// - Quản lý người dùng (update role, lock/unlock)
+// - Quản lý phòng (add, update, delete)
+// - Quản lý booking (view, update status)
+// - Báo cáo doanh thu
+// - Chỉ admin/staff có thể truy cập
+
 package com.example.controllers;
 
 import java.time.LocalDate;

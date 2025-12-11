@@ -1,3 +1,13 @@
+// ========================================
+// CONTROLLER THANH TOÁN (Payment Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Tạo yêu cầu thanh toán (/payment/create)
+// - Xử lý callback từ VNPay (/payment/vnpay-return)
+// - Kiểm tra trạng thái thanh toán
+// - Tự động xác nhận booking sau khi thanh toán thành công
+// - Gửi email xác nhận sau thanh toán
+
 package com.example.controllers;
 
 import java.math.BigDecimal;

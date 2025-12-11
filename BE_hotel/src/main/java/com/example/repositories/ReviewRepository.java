@@ -1,3 +1,4 @@
+// Repository quản lý Review: query đánh giá theo phòng, user, booking
 package com.example.repositories;
 
 import java.util.List;

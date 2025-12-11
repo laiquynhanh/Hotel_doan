@@ -1,3 +1,4 @@
+// DTO tạo đặt mục ăn (bookingId, danh sách items với quantity)
 package com.example.dto;
 
 import java.util.List;

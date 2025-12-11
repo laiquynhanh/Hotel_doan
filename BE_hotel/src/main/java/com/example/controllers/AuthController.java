@@ -1,3 +1,12 @@
+// ========================================
+// CONTROLLER XÁC THỰC (Authentication Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Đăng ký tài khoản (/auth/register)
+// - Đăng nhập (/auth/login) - trả JWT token
+// - Quên mật khẩu (/auth/forgot-password) - gửi email reset
+// - Đặt lại mật khẩu (/auth/reset-password) - kiểm tra token & cập nhật
+
 package com.example.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;

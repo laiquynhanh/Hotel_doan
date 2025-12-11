@@ -1,3 +1,4 @@
+// DTO để tạo booking (check-in, check-out, roomId, số khách, mã coupon)
 package com.example.dto;
 
 import java.time.LocalDate;

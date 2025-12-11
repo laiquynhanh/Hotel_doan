@@ -1,3 +1,4 @@
+// Entity đặt đồ ăn: lưu user, booking, danh sách items, tổng giá, trạng thái, ngày tạo
 package com.example.domain;
 
 import java.math.BigDecimal;

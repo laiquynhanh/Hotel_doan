@@ -1,3 +1,4 @@
+// DTO đổi mật khẩu (mật khẩu cũ, mật khẩu mới, xác nhận)
 package com.example.dto;
 
 import jakarta.validation.constraints.NotBlank;

@@ -1,3 +1,14 @@
+// ========================================
+// DỊCH VỤ NGƯỜI DÙNG (User Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Đăng ký tài khoản (validate, mã hóa password)
+// - Đăng nhập (kiểm tra password, sinh JWT)
+// - Cập nhật hồ sơ (email, họ tên, SĐT)
+// - Đổi mật khẩu (kiểm tra password cũ)
+// - Tìm user theo ID/username/email
+// - Gửi email chào mừng khi đăng ký
+
 package com.example.services;
 
 import org.springframework.beans.factory.annotation.Autowired;

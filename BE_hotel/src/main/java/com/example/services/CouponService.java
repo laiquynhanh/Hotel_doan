@@ -1,16 +1,25 @@
+// ========================================
+// DỊCH VỤ MÃ GIẢM GIÁ (Coupon Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Tạo mã giảm mới (validate mã, giá trị, hạn sử dụng)
+// - Validate mã hợp lệ (check ngày, giá tối thiểu)
+// - Lấy danh sách mã
+// - Xóa mã hết hạn
+
 package com.example.services;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.domain.Coupon;
 import com.example.domain.DiscountType;
 import com.example.dto.CouponDTO;
 import com.example.repositories.CouponRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CouponService {
@@ -33,7 +42,7 @@ public class CouponService {
     public CouponDTO createCoupon(CouponDTO dto) {
         // Check if code already exists
         if (couponRepository.findByCode(dto.getCode()).isPresent()) {
-            throw new RuntimeException("Mã giảm giá đã tồn tại");
+            throw new IllegalArgumentException("Mã giảm giá đã tồn tại");
         }
 
         Coupon coupon = new Coupon();
@@ -79,11 +88,11 @@ public class CouponService {
                 .orElseThrow(() -> new RuntimeException("Mã giảm giá không tồn tại hoặc đã hết hạn"));
 
         if (!coupon.isValid()) {
-            throw new RuntimeException("Mã giảm giá không còn hiệu lực");
+            throw new IllegalArgumentException("Mã giảm giá không còn hiệu lực");
         }
 
         if (coupon.getMinOrderAmount() != null && orderAmount.compareTo(coupon.getMinOrderAmount()) < 0) {
-            throw new RuntimeException("Đơn hàng chưa đủ giá trị tối thiểu để áp dụng mã giảm giá");
+            throw new IllegalArgumentException("Đơn hàng chưa đủ giá trị tối thiểu để áp dụng mã giảm giá");
         }
 
         return convertToDTO(coupon);

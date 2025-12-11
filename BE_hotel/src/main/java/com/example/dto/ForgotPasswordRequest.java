@@ -1,3 +1,4 @@
+// DTO quên mật khẩu (email để gửi link reset)
 package com.example.dto;
 
 import jakarta.validation.constraints.Email;

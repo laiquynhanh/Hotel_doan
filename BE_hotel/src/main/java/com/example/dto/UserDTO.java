@@ -1,3 +1,4 @@
+// DTO thông tin người dùng (ID, email, tên, số đt, role, trạng thái)
 package com.example.dto;
 
 public class UserDTO {

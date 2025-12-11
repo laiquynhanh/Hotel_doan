@@ -1,3 +1,4 @@
+// DTO trả về sau đăng nhập (token JWT, userId, email, tên, SĐT, role)
 package com.example.dto;
 
 import com.example.domain.Role;

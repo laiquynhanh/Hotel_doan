@@ -1,3 +1,13 @@
+// ========================================
+// CONTROLLER ĐẶT PHÒNG (Booking Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Tạo booking mới (/bookings)
+// - Lấy booking của user hiện tại (/bookings/my-bookings)
+// - Hủy booking (/bookings/{id})
+// - Kiểm tra phòng trống (search)
+// - Yêu cầu JWT token
+
 package com.example.controllers;
 
 import java.util.List;

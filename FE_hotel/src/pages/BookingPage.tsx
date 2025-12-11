@@ -1,3 +1,13 @@
+// ========================================
+// TRANG ĐẶT PHÒNG (Booking Page)
+// ========================================
+// Tính năng chính:
+// - Tìm kiếm phòng trống (date range, số khách)
+// - Hiển thị danh sách phòng phù hợp
+// - Xác nhận đặt phòng trong modal
+// - Tính tổng tiền tự động
+// - Yêu cầu đăng nhập trước khi đặt
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { roomService } from '../services/room.service';

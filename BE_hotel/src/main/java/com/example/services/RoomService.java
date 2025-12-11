@@ -1,3 +1,13 @@
+// ========================================
+// DỊCH VỤ PHÒNG (Room Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Tìm phòng trống (search by date, loại, giá)
+// - Lấy danh sách tất cả phòng
+// - Lấy chi tiết phòng
+// - Cập nhật trạng thái phòng
+// - Validate ngày nhận/trả phòng
+
 package com.example.services;
 
 import java.time.LocalDate;
@@ -47,11 +57,11 @@ public class RoomService {
         System.out.println("[DEBUG] searchAvailableRooms called with checkIn: " + checkIn + ", checkOut: " + checkOut + ", roomType: " + roomType + ", minCapacity: " + minCapacity);
         
         if (checkIn == null || checkOut == null) {
-            throw new RuntimeException("Check-in and check-out dates are required");
+            throw new IllegalArgumentException("Check-in and check-out dates are required");
         }
 
         if (checkIn.isAfter(checkOut) || checkIn.isBefore(LocalDate.now())) {
-            throw new RuntimeException("Invalid date range");
+            throw new IllegalArgumentException("Invalid date range");
         }
 
         List<Room> candidateRooms;
@@ -60,7 +70,7 @@ public class RoomService {
                 RoomType type = RoomType.valueOf(roomType.toUpperCase());
                 candidateRooms = roomRepository.findByRoomType(type);
             } catch (IllegalArgumentException e) {
-                throw new RuntimeException("Invalid room type");
+                throw new IllegalArgumentException("Invalid room type");
             }
         } else {
             candidateRooms = roomRepository.findAll();
@@ -117,7 +127,7 @@ public class RoomService {
 
     public RoomDTO createRoom(RoomDTO roomDTO) {
         if (roomRepository.findByRoomNumber(roomDTO.getRoomNumber()) != null) {
-            throw new RuntimeException("Room number already exists");
+            throw new IllegalArgumentException("Room number already exists");
         }
 
         Room room = new Room();
@@ -144,7 +154,7 @@ public class RoomService {
 
     public RoomDTO updateRoom(Long id, RoomDTO roomDTO) {
         Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
         room.setRoomType(roomDTO.getRoomType());
         room.setPricePerNight(roomDTO.getPricePerNight());
@@ -167,7 +177,7 @@ public class RoomService {
 
     public void deleteRoom(Long id) {
         if (!roomRepository.existsById(id)) {
-            throw new RuntimeException("Room not found");
+            throw new IllegalArgumentException("Room not found");
         }
         roomRepository.deleteById(id);
     }

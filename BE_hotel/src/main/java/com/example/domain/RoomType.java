@@ -1,3 +1,4 @@
+// Enum loại phòng: SINGLE, DOUBLE, DELUXE, SUITE, FAMILY, PREMIUM (với tên hiển thị, dung tích)
 package com.example.domain;
 
 public enum RoomType {

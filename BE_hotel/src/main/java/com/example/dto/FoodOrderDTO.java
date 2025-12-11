@@ -1,3 +1,4 @@
+// DTO đặt mục ăn (ID, user, booking, items, tổng giá, trạng thái, thời gian)
 package com.example.dto;
 
 import java.math.BigDecimal;

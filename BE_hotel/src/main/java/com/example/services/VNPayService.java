@@ -1,3 +1,12 @@
+// ========================================
+// DỊCH VỤ THANH TOÁN VNPAY (VNPay Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Tạo URL thanh toán VNPay với các tham số giao dịch
+// - Xác thực phản hồi từ VNPay (kiểm tra chữ ký, trạng thái)
+// - Tính toán HMAC-SHA512 để bảo mật giao dịch
+// - Quản lý thông số thanh toán (mã giao dịch, số tiền, thời gian)
+
 package com.example.services;
 
 import java.net.URLEncoder;

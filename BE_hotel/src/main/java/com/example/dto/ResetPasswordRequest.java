@@ -1,3 +1,4 @@
+// DTO đặt lại mật khẩu (token từ email, mật khẩu mới)
 package com.example.dto;
 
 import jakarta.validation.constraints.NotBlank;

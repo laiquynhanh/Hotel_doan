@@ -1,3 +1,4 @@
+// Entity người dùng: lưu email, mật khẩu, họ tên, số đt, role, trạng thái, ảnh, ngày tẠo
 package com.example.domain;
 
 import jakarta.persistence.Column;

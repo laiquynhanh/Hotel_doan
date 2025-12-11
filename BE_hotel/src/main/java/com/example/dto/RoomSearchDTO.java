@@ -1,3 +1,4 @@
+// DTO tìm kiếm phòng (check-in, check-out, loại, dung tích, giá từ-đến)
 package com.example.dto;
 
 import java.time.LocalDate;

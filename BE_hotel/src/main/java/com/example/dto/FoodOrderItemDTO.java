@@ -1,3 +1,4 @@
+// DTO mục trong đơn hàng (foodItemId, tên, số lượng, giá)
 package com.example.dto;
 
 import java.math.BigDecimal;

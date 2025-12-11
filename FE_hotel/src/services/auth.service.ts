@@ -1,3 +1,9 @@
+// ========================================
+// DỊCH VỤ XÁC THỰC (Authentication Service)
+// ========================================
+// Xử lý các chức năng liên quan đến đăng nhập, đăng ký,
+// quên mật khẩu, reset mật khẩu, quản lý token JWT
+
 import api from '../utils/api';
 import type { LoginResponse, RegisterResponse } from '../types/auth.types';
 

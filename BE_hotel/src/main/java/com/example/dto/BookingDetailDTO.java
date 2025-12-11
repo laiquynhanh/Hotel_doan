@@ -1,3 +1,4 @@
+// DTO chi tiết booking với thông tin phòng, người dùng, thông tin dịch vụ thêm
 package com.example.dto;
 
 import com.example.domain.BookingStatus;

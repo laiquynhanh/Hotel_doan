@@ -1,3 +1,4 @@
+// Entity đánh giá phòng: lưu user, phòng, điểm 1-5, comment, ngày đánh giá
 package com.example.domain;
 
 import java.time.LocalDateTime;

@@ -1,3 +1,4 @@
+// Repository quản lý TableReservation: query đặt bàn theo user, booking, conflict giờ
 package com.example.repositories;
 
 import java.time.LocalDate;

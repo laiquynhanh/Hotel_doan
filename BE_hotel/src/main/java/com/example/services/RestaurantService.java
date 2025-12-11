@@ -1,3 +1,13 @@
+// ========================================
+// DỊCH VỤ ĐẶT BÀN NHÀ HÀNG (Restaurant Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Quản lý bàn nhà hàng (tạo, xóa, cập nhật)
+// - Tạo đặt bàn (validate dung tích, kiểm tra conflict thời gian)
+// - Hủy đặt bàn (check quyền, trạng thái)
+// - Tìm bàn trống trong khung giờ
+// - Lấy danh sách đặt bàn theo user/bookingId
+
 package com.example.services;
 
 import java.time.LocalDate;
@@ -65,11 +75,11 @@ public class RestaurantService {
     @Transactional
     public TableReservationDTO createReservation(TableReservationCreateDTO createDTO, Long userId) {
         RestaurantTable table = tableRepository.findById(createDTO.getTableId())
-                .orElseThrow(() -> new RuntimeException("Bàn không tồn tại"));
+                .orElseThrow(() -> new IllegalArgumentException("Bàn không tồn tại"));
 
         // Validate capacity
         if (createDTO.getPartySize() > table.getCapacity()) {
-            throw new RuntimeException("Số lượng khách vượt quá sức chứa của bàn");
+            throw new IllegalArgumentException("Số lượng khách vượt quá sức chứa của bàn");
         }
 
         // Check for conflicts (2 hour window)
@@ -81,7 +91,7 @@ public class RestaurantService {
         );
 
         if (!conflicts.isEmpty()) {
-            throw new RuntimeException("Bàn đã được đặt trong khung giờ này");
+            throw new IllegalArgumentException("Bàn đã được đặt trong khung giờ này");
         }
 
         User user = null;
@@ -95,10 +105,10 @@ public class RestaurantService {
         
         // Require and set bookingId to link reservation to booking
         if (createDTO.getBookingId() == null) {
-            throw new RuntimeException("Đặt bàn phải kèm theo bookingId");
+            throw new IllegalArgumentException("Đặt bàn phải kèm theo bookingId");
         }
         com.example.domain.Booking booking = bookingRepository.findById(createDTO.getBookingId())
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy booking tương ứng"));
+            .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy booking tương ứng"));
         reservation.setBooking(booking);
         
         reservation.setGuestName(createDTO.getGuestName());
@@ -130,14 +140,14 @@ public class RestaurantService {
     @Transactional
     public void cancelReservation(Long reservationId, Long userId) {
         TableReservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Đặt bàn không tồn tại"));
+                .orElseThrow(() -> new IllegalArgumentException("Đặt bàn không tồn tại"));
         
         if (userId != null && reservation.getUser() != null && !reservation.getUser().getId().equals(userId)) {
-            throw new RuntimeException("Bạn không có quyền hủy đặt bàn này");
+            throw new IllegalArgumentException("Bạn không có quyền hủy đặt bàn này");
         }
         
         if (reservation.getStatus() == ReservationStatus.COMPLETED || reservation.getStatus() == ReservationStatus.CANCELLED) {
-            throw new RuntimeException("Không thể hủy đặt bàn đã hoàn thành hoặc đã hủy");
+            throw new IllegalArgumentException("Không thể hủy đặt bàn đã hoàn thành hoặc đã hủy");
         }
         
         reservation.setStatus(ReservationStatus.CANCELLED);

@@ -1,3 +1,12 @@
+// ========================================
+// DỊCH VỤ THỰC ĐƠN (Food Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Quản lý danh sách món ăn, thức uống
+// - Tìm kiếm, lọc thực đơn
+// - Lấy chi tiết thông tin từng món
+// - Hỗ trợ tìm kiếm theo tên, danh mục
+
 package com.example.services;
 
 import java.util.List;

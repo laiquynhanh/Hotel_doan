@@ -1,3 +1,4 @@
+// Repository quản lý FoodOrderItem: query chi tiết mục trong đơn hàng
 package com.example.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,3 +1,4 @@
+// Entity danh mục thực đơn: lưu tên danh mục, mô tả, hình ảnh, trạng thái
 package com.example.domain;
 
 import jakarta.persistence.Column;

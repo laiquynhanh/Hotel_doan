@@ -1,3 +1,13 @@
+// ========================================
+// CONTROLLER TẢI LÊN (Upload Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Tải lên hình ảnh phòng (/upload/room-image)
+// - Tải lên hình ảnh mục thực đơn (/upload/food-image)
+// - Nén hình ảnh, tối ưu kích thước
+// - Xác thực loại file (jpg, png)
+// - Lưu vào /uploads/images
+
 package com.example.controllers;
 
 import java.awt.Graphics2D;

@@ -1,3 +1,12 @@
+// ========================================
+// DỊCH VỤ DANH MỤC (Category Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Quản lý danh mục thực đơn (Appetizers, Mains, Desserts, Beverages...)
+// - Lấy danh sách danh mục
+// - Lấy chi tiết danh mục và các món ăn liên quan
+// - Hỗ trợ tìm kiếm theo danh mục
+
 package com.example.services;
 
 import java.util.List;

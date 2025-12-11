@@ -1,3 +1,13 @@
+// ========================================
+// DỊCH VỤ ĐẶT MÓN ĂN (Food Order Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Tạo đơn hàng mới (validate items, tính giá)
+// - Hủy đơn hàng (check trạng thái)
+// - Cập nhật trạng thái đơn hàng
+// - Tìm đơn hàng theo user/ID
+// - Tính tổng giá với số lượng
+
 package com.example.services;
 
 import java.math.BigDecimal;
@@ -140,11 +150,11 @@ public class FoodOrderService {
                 .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
         
         if (!order.getUser().getId().equals(userId)) {
-            throw new RuntimeException("Bạn không có quyền hủy đơn hàng này");
+            throw new IllegalArgumentException("Bạn không có quyền hủy đơn hàng này");
         }
         
         if (order.getStatus() != FoodOrderStatus.PENDING && order.getStatus() != FoodOrderStatus.CONFIRMED) {
-            throw new RuntimeException("Không thể hủy đơn hàng đang được xử lý");
+            throw new IllegalArgumentException("Không thể hủy đơn hàng đang được xử lý");
         }
         
         order.setStatus(FoodOrderStatus.CANCELLED);

@@ -1,3 +1,4 @@
+// Repository quản lý Room: query theo loại, số phòng, từng này
 package com.example.repositories;
 
 import java.time.LocalDate;

@@ -1,3 +1,12 @@
+// ========================================
+// CONTROLLER NGƯỜI DÙNG (User Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Lấy thông tin user hiện tại (/users/me)
+// - Cập nhật hồ sơ (/users/profile)
+// - Đổi mật khẩu (/users/change-password)
+// - Yêu cầu JWT token
+
 package com.example.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;

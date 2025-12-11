@@ -1,3 +1,4 @@
+// DTO tạo đặt bàn (bookingId, bàn, tên khách, SĐT, email, ngày/giờ, số người)
 package com.example.dto;
 
 import java.time.LocalDate;

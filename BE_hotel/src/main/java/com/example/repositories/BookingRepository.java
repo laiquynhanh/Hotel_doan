@@ -1,3 +1,4 @@
+// Repository quản lý Booking: query đặt phòng theo user, ngày, trạng thái, conflict
 package com.example.repositories;
 
 import java.time.LocalDate;

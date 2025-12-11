@@ -1,3 +1,4 @@
+// Entity thanh toán: lưu booking, số tiền, trạng thái, mã giao dịch VNPay, ngày tạo
 package com.example.domain;
 
 import java.math.BigDecimal;

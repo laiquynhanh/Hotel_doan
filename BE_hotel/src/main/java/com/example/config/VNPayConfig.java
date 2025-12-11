@@ -1,3 +1,4 @@
+// CẤU HÌNH VNPAY: mã merchant, API secret, URL callback, tỷ giá
 package com.example.config;
 
 import org.springframework.beans.factory.annotation.Value;

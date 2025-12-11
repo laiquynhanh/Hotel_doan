@@ -1,3 +1,13 @@
+// ========================================
+// DỊCH VỤ ĐẶT LẠI MẬT KHẨU (Password Reset Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Sinh token reset mật khẩu (UUID, hết hạn 30 phút)
+// - Gửi email chứa link reset
+// - Kiểm tra token hợp lệ & chưa dùng
+// - Mã hóa & cập nhật mật khẩu mới
+// - Dọn dẹp token cũ
+
 package com.example.services;
 
 import java.time.LocalDateTime;

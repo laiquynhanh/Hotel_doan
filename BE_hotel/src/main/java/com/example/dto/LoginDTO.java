@@ -1,3 +1,4 @@
+// DTO đăng nhập (email, password)
 package com.example.dto;
 
 public class LoginDTO {

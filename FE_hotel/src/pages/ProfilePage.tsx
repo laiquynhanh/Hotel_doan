@@ -1,3 +1,13 @@
+// ========================================
+// TRANG HỒ SƠ NGƯỜI DÙNG (Profile Page)
+// ========================================
+// Tính năng chính:
+// - Xem thông tin cá nhân (tên, email, SĐT)
+// - Chỉnh sửa hồ sơ
+// - Đổi mật khẩu
+// - Kiểm tra email không trùng user khác
+// - Yêu cầu đăng nhập
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';

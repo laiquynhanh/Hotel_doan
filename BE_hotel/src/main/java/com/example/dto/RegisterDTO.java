@@ -1,3 +1,4 @@
+// DTO đăng ký (email, mật khẩu, họ tên, số điện thoại)
 package com.example.dto;
 
 import jakarta.validation.constraints.Email;

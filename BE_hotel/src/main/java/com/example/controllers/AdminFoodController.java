@@ -1,3 +1,12 @@
+// ========================================
+// CONTROLLER QUẢN TRỊ THỰC ĐƠN (Admin Food Controller)
+// ========================================
+// Xử lý các endpoint quản trị liên quan đến:
+// - Tạo, cập nhật, xóa danh mục thực đơn (/admin/categories)
+// - Tạo, cập nhật, xóa mục thực đơn (/admin/food-items)
+// - Quản lý giá, mô tả, hình ảnh món ăn
+// - Danh sách thực đơn theo danh mục
+
 package com.example.controllers;
 
 import java.util.List;

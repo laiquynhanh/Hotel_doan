@@ -1,3 +1,4 @@
+// DTO cập nhật hồ sơ user (email, họ tên, số đt, thẻ ÍT, địa chị)
 package com.example.dto;
 
 import jakarta.validation.constraints.Email;

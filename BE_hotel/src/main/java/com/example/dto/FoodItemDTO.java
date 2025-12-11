@@ -1,3 +1,4 @@
+// DTO mục thực đơn (ID, tên, mô tả, giá, hình ảnh, danh mục)
 package com.example.dto;
 
 import java.math.BigDecimal;

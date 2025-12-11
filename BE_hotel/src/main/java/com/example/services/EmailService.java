@@ -1,3 +1,13 @@
+// ========================================
+// DỊCH VỤ GỬI EMAIL (Email Service)
+// ========================================
+// Xử lý gửi email cho các chức năng:
+// - Chào mừng khi đăng ký
+// - Xác nhận thanh toán/đặt phòng
+// - Gửi link đặt lại mật khẩu
+// - Dùng JavaMailSender (SMTP) - async task
+// - Có template email (nếu cần)
+
 package com.example.services;
 
 import java.io.InputStream;

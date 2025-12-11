@@ -1,3 +1,4 @@
+// DTO đánh giá phòng (ID, user, phòng, điểm, comment, ngày tạo)
 package com.example.dto;
 
 import java.time.LocalDateTime;

@@ -1,3 +1,12 @@
+// ========================================
+// CONTROLLER THỰC ĐƠN (Food Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Lấy danh sách mục thực đơn (/food-items)
+// - Lấy chi tiết mục (/food-items/{id})
+// - Tìm kiếm theo tên, danh mục, giá
+// - Lấy hình ảnh, mô tả chi tiết
+
 package com.example.controllers;
 
 import java.util.List;

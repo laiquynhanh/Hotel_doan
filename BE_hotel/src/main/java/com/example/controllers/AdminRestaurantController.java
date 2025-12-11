@@ -1,3 +1,12 @@
+// ========================================
+// CONTROLLER QUẢN TRỊ NHÀ HÀNG (Admin Restaurant Controller)
+// ========================================
+// Xử lý các endpoint quản trị liên quan đến:
+// - Tạo, cập nhật, xóa bàn nhà hàng (/admin/tables)
+// - Quản lý dung tích, trạng thái bàn
+// - Xem danh sách đặt bàn (/admin/reservations)
+// - Xác nhận/hủy đặt bàn
+
 package com.example.controllers;
 
 import java.time.LocalDate;

@@ -1,3 +1,4 @@
+// Entity mục thực đơn: lưu tên món, mô tả, giá, hình ảnh, danh mục, trạng thái
 package com.example.domain;
 
 import java.math.BigDecimal;

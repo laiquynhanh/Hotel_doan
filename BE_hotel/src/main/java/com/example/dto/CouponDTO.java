@@ -1,3 +1,4 @@
+// DTO mã giảm giá (code, giá trị, kiểu: % hoặc tiền, ngày hẽạn)
 package com.example.dto;
 
 import java.math.BigDecimal;

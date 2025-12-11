@@ -1,3 +1,13 @@
+// ========================================
+// CONTROLLER ĐẶT MÓN ĂN (Food Order Controller)
+// ========================================
+// Xử lý các endpoint liên quan đến:
+// - Tạo đơn hàng mới (/food-orders)
+// - Lấy đơn hàng của user (/food-orders/my-orders)
+// - Hủy đơn hàng (/food-orders/{id})
+// - Cập nhật trạng thái đơn hàng
+// - Yêu cầu JWT token
+
 package com.example.controllers;
 
 import java.util.List;

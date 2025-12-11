@@ -1,3 +1,12 @@
+// ========================================
+// CONTROLLER PHÂN TÍCH THỐNG KÊ (Analytics Controller)
+// ========================================
+// Xử lý các endpoint thống kê liên quan đến:
+// - Doanh thu, lợi nhuận theo ngày/tháng/năm (/analytics/revenue)
+// - Thống kê đặt phòng (/analytics/bookings)
+// - Phân tích phòng (tỷ lệ chiếm, khách trung bình) (/analytics/rooms)
+// - Dashboard admin tổng hợp
+
 package com.example.controllers;
 
 import java.time.LocalDate;

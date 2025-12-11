@@ -1,3 +1,13 @@
+// ========================================
+// DỊCH VỤ PHÂN TÍCH THỐNG KÊ (Analytics Service)
+// ========================================
+// Xử lý logic liên quan đến:
+// - Tính toán doanh thu, lợi nhuận theo khoảng thời gian
+// - Thống kê đặt phòng, hủy phòng
+// - Phân tích dữ liệu phòng (tối đa, trung bình, rủi ro)
+// - Báo cáo tổng hợp theo ngày, tháng, quý
+// - Dữ liệu hỗ trợ dashboard admin
+
 package com.example.services;
 
 import java.math.BigDecimal;

@@ -1,3 +1,4 @@
+// CẤU HÌNH SPRING SECURITY: JWT token, endpoint public/private, password encoder
 package com.example.config;
 
 import org.springframework.context.annotation.Bean;

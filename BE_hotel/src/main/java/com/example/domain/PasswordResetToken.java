@@ -1,3 +1,4 @@
+// Entity token đặt lại mật khẩu: lưu token UUID, user, hết hạn 30 phút, đã sử dụng
 package com.example.domain;
 
 import java.time.LocalDateTime;
