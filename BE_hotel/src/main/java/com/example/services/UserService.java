@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.domain.Role;
 import com.example.domain.User;
+import com.example.dto.ChangePasswordDTO;
 import com.example.dto.LoginDTO;
 import com.example.dto.LoginResponseDTO;
 import com.example.dto.RegisterDTO;
@@ -15,6 +16,9 @@ import com.example.repositories.UserRepository;
 
 @Service
 public class UserService {
+
+    private static final String USER_NOT_FOUND = "User not found";
+
     @Autowired
     private UserRepository userRepository;
 
@@ -25,11 +29,11 @@ public class UserService {
     private JwtService jwtService;
 
     @Autowired
-    private com.example.services.EmailService emailService;
+    private EmailService emailService;
 
     public UserResponseDTO register(RegisterDTO registerDTO) {
         if(userRepository.existsByUsername(registerDTO.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new IllegalArgumentException("Username already exists");
         }
 
         User user = new User();
@@ -61,7 +65,7 @@ public class UserService {
     public LoginResponseDTO login(LoginDTO loginDTO) {
         User user = userRepository.findByUsername(loginDTO.getUsername());
         if(user == null || !passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid username or password");
+            throw new IllegalArgumentException("Invalid username or password");
         }
         
         
@@ -80,25 +84,25 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
     }
 
     public User findByUsername(String username) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new RuntimeException("User not found");
+            throw new IllegalArgumentException(USER_NOT_FOUND);
         }
         return user;
     }
 
     public UserResponseDTO updateProfile(Long userId, UpdateProfileDTO updateProfileDTO) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
         
         // Check if email is already used by another user
         User existingUser = userRepository.findByEmail(updateProfileDTO.getEmail());
         if (existingUser != null && !existingUser.getId().equals(userId)) {
-            throw new RuntimeException("Email đã được sử dụng bởi tài khoản khác");
+            throw new IllegalArgumentException("Email đã được sử dụng bởi tài khoản khác");
         }
         
         user.setFullName(updateProfileDTO.getFullName());
@@ -115,5 +119,17 @@ public class UserService {
             updatedUser.getPhoneNumber(),
             updatedUser.getRole()
         );
+    }
+
+    public void changePassword(Long userId, ChangePasswordDTO dto) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Mật khẩu hiện tại không đúng");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
     }
 }

@@ -21,6 +21,7 @@ const validationSchema = yup.object({
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'profile' | 'password'>('profile');
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -103,7 +104,7 @@ const ProfilePage = () => {
         <div className="col-lg-8 offset-lg-2">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2>Thông tin cá nhân</h2>
-            {!isEditing && (
+            {!isEditing && activeTab === 'profile' && (
               <button 
                 className="btn btn-primary"
                 onClick={() => setIsEditing(true)}
@@ -112,6 +113,35 @@ const ProfilePage = () => {
               </button>
             )}
           </div>
+
+          {/* Tabs */}
+          <ul className="nav nav-tabs mb-3" role="tablist">
+            <li className="nav-item" role="presentation">
+              <button 
+                className={`nav-link ${activeTab === 'profile' ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveTab('profile');
+                  setIsEditing(false);
+                  setError('');
+                  setSuccess('');
+                }}
+              >
+                <i className="fa fa-user me-2"></i>Thông tin cá nhân
+              </button>
+            </li>
+            <li className="nav-item" role="presentation">
+              <button 
+                className={`nav-link ${activeTab === 'password' ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveTab('password');
+                  setError('');
+                  setSuccess('');
+                }}
+              >
+                <i className="fa fa-lock me-2"></i>Chỉnh sửa mật khẩu
+              </button>
+            </li>
+          </ul>
 
           {error && (
             <div className="alert alert-danger" role="alert">
@@ -127,8 +157,9 @@ const ProfilePage = () => {
 
           <div className="card">
             <div className="card-body">
-              {isEditing ? (
-                <form onSubmit={formik.handleSubmit}>
+              {activeTab === 'profile' ? (
+                isEditing ? (
+                  <form onSubmit={formik.handleSubmit}>
                   <div className="mb-3">
                     <label className="form-label"><strong>Tên đăng nhập:</strong></label>
                     <p className="text-muted">{user.username} (không thể thay đổi)</p>
@@ -214,34 +245,191 @@ const ProfilePage = () => {
                     </button>
                   </div>
                 </form>
+                ) : (
+                  <>
+                    <div className="mb-3">
+                      <label className="form-label"><strong>Tên đăng nhập:</strong></label>
+                      <p>{user.username}</p>
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label"><strong>Họ và tên:</strong></label>
+                      <p>{user.fullName}</p>
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label"><strong>Email:</strong></label>
+                      <p>{user.email}</p>
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label"><strong>Số điện thoại:</strong></label>
+                      <p>{user.phoneNumber || 'Chưa cập nhật'}</p>
+                    </div>
+                    <button className="btn btn-secondary" onClick={() => navigate(-1)}>
+                      Quay lại
+                    </button>
+                  </>
+                )
               ) : (
-                <>
-                  <div className="mb-3">
-                    <label className="form-label"><strong>Tên đăng nhập:</strong></label>
-                    <p>{user.username}</p>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label"><strong>Họ và tên:</strong></label>
-                    <p>{user.fullName}</p>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label"><strong>Email:</strong></label>
-                    <p>{user.email}</p>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label"><strong>Số điện thoại:</strong></label>
-                    <p>{user.phoneNumber || 'Chưa cập nhật'}</p>
-                  </div>
-                  <button className="btn btn-secondary" onClick={() => navigate(-1)}>
-                    Quay lại
-                  </button>
-                </>
+                <ChangePasswordTab setError={setError} setSuccess={setSuccess} />
               )}
             </div>
           </div>
         </div>
       </div>
     </div>
+  );
+};
+
+// Change Password Component
+const ChangePasswordTab = ({ setError, setSuccess }: any) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [showCurrentPass, setShowCurrentPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+
+  const passwordSchema = yup.object({
+    currentPassword: yup.string()
+      .required('Vui lòng nhập mật khẩu hiện tại'),
+    newPassword: yup.string()
+      .required('Vui lòng nhập mật khẩu mới')
+      .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
+      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Mật khẩu phải chứa chữ hoa, chữ thường và số'),
+    confirmPassword: yup.string()
+      .required('Vui lòng xác nhận mật khẩu')
+      .oneOf([yup.ref('newPassword')], 'Mật khẩu xác nhận không khớp'),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    },
+    validationSchema: passwordSchema,
+    onSubmit: async (values) => {
+      setError('');
+      setSuccess('');
+      setIsLoading(true);
+      try {
+        await authService.changePassword({
+          currentPassword: values.currentPassword,
+          newPassword: values.newPassword,
+        });
+        setSuccess('Mật khẩu đã được thay đổi thành công!');
+        formik.resetForm();
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'Thay đổi mật khẩu thất bại. Vui lòng thử lại.');
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+  });
+
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <div className="mb-3">
+        <label htmlFor="currentPassword" className="form-label">
+          <strong>Mật khẩu hiện tại: *</strong>
+        </label>
+        <div className="input-group">
+          <input
+            type={showCurrentPass ? 'text' : 'password'}
+            className={`form-control ${formik.touched.currentPassword && formik.errors.currentPassword ? 'is-invalid' : ''}`}
+            id="currentPassword"
+            name="currentPassword"
+            value={formik.values.currentPassword}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            placeholder="Nhập mật khẩu hiện tại"
+          />
+          <button 
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => setShowCurrentPass(!showCurrentPass)}
+          >
+            <i className={`fa fa-${showCurrentPass ? 'eye-slash' : 'eye'}`}></i>
+          </button>
+        </div>
+        {formik.touched.currentPassword && formik.errors.currentPassword && (
+          <div className="invalid-feedback d-block">
+            {formik.errors.currentPassword}
+          </div>
+        )}
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="newPassword" className="form-label">
+          <strong>Mật khẩu mới: *</strong>
+        </label>
+        <div className="input-group">
+          <input
+            type={showNewPass ? 'text' : 'password'}
+            className={`form-control ${formik.touched.newPassword && formik.errors.newPassword ? 'is-invalid' : ''}`}
+            id="newPassword"
+            name="newPassword"
+            value={formik.values.newPassword}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự, chứa A-Z, a-z, 0-9)"
+          />
+          <button 
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => setShowNewPass(!showNewPass)}
+          >
+            <i className={`fa fa-${showNewPass ? 'eye-slash' : 'eye'}`}></i>
+          </button>
+        </div>
+        {formik.touched.newPassword && formik.errors.newPassword && (
+          <div className="invalid-feedback d-block">
+            {formik.errors.newPassword}
+          </div>
+        )}
+        <small className="text-muted d-block mt-2">
+          Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa (A-Z), chữ thường (a-z) và số (0-9)
+        </small>
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="confirmPassword" className="form-label">
+          <strong>Xác nhận mật khẩu mới: *</strong>
+        </label>
+        <div className="input-group">
+          <input
+            type={showConfirmPass ? 'text' : 'password'}
+            className={`form-control ${formik.touched.confirmPassword && formik.errors.confirmPassword ? 'is-invalid' : ''}`}
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formik.values.confirmPassword}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            placeholder="Nhập lại mật khẩu mới"
+          />
+          <button 
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => setShowConfirmPass(!showConfirmPass)}
+          >
+            <i className={`fa fa-${showConfirmPass ? 'eye-slash' : 'eye'}`}></i>
+          </button>
+        </div>
+        {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+          <div className="invalid-feedback d-block">
+            {formik.errors.confirmPassword}
+          </div>
+        )}
+      </div>
+
+      <div className="d-flex gap-2">
+        <button 
+          type="submit" 
+          className="btn btn-success"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Đang thay đổi...' : 'Thay đổi mật khẩu'}
+        </button>
+      </div>
+    </form>
   );
 };
 

@@ -15,6 +15,8 @@ import BlogDetailsPage from './pages/BlogDetailsPage';
 import ContactPage from './pages/ContactPage';
 import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
+import ForgotPasswordForm from './components/auth/ForgotPasswordForm';
+import ResetPasswordForm from './components/auth/ResetPasswordForm';
 import ProfilePage from './pages/ProfilePage';
 import MyBookingsPage from './pages/MyBookingsPage';
 import BookingPage from './pages/BookingPage';
@@ -44,9 +46,7 @@ import './App.css';
 // Loading component
 const LoadingFallback = () => (
   <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-    <div className="spinner-border text-primary" role="status">
-      <span className="visually-hidden">Loading...</span>
-    </div>
+    <div className="spinner-border text-primary" aria-live="polite" aria-label="Loading" />
   </div>
 );
 
@@ -69,6 +69,8 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
+            <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+            <Route path="/reset-password" element={<ResetPasswordForm />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/booking" element={<BookingPage />} />
             <Route path="/my-bookings" element={<MyBookingsPage />} />

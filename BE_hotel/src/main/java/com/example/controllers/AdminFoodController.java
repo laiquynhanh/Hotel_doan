@@ -23,7 +23,6 @@ import com.example.services.FoodService;
 
 @RestController
 @RequestMapping("/api/admin/food")
-@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 public class AdminFoodController {
 
     @Autowired
@@ -32,8 +31,9 @@ public class AdminFoodController {
     @Autowired
     private FoodOrderService foodOrderService;
 
-    // Food Items Management
+    // Food Items Management - ADMIN only
     @GetMapping("/items")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllFoodItems() {
         try {
             List<FoodItem> items = foodService.getAllFoodItems();
@@ -44,6 +44,7 @@ public class AdminFoodController {
     }
 
     @PostMapping("/items")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createFoodItem(@RequestBody FoodItem foodItem) {
         try {
             FoodItem created = foodService.createFoodItem(foodItem);
@@ -54,6 +55,7 @@ public class AdminFoodController {
     }
 
     @PutMapping("/items/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateFoodItem(
             @PathVariable Long id,
             @RequestBody FoodItem foodItem) {
@@ -66,6 +68,7 @@ public class AdminFoodController {
     }
 
     @DeleteMapping("/items/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteFoodItem(@PathVariable Long id) {
         try {
             foodService.deleteFoodItem(id);
@@ -76,6 +79,7 @@ public class AdminFoodController {
     }
 
     @PutMapping("/items/{id}/toggle-availability")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> toggleAvailability(@PathVariable Long id) {
         try {
             foodService.toggleAvailability(id);
@@ -85,8 +89,9 @@ public class AdminFoodController {
         }
     }
 
-    // Food Orders Management
+    // Food Orders Management - Both ADMIN and STAFF
     @GetMapping("/orders")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<?> getAllOrders(@RequestParam(required = false) String status) {
         try {
             List<FoodOrderDTO> orders;
@@ -105,6 +110,7 @@ public class AdminFoodController {
     }
 
     @GetMapping("/orders/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<?> getOrderById(@PathVariable Long id) {
         try {
             FoodOrderDTO order = foodOrderService.getOrderById(id);
@@ -115,6 +121,7 @@ public class AdminFoodController {
     }
 
     @PutMapping("/orders/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<?> updateOrderStatus(
             @PathVariable Long id,
             @RequestParam String status) {

@@ -42,7 +42,7 @@ const AdminPage = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!authService.isAdmin()) {
+    if (!authService.isAdminOrStaff()) {
       alert('Bạn không có quyền truy cập trang này!');
       navigate('/');
       return;
@@ -119,6 +119,11 @@ const AdminPage = () => {
   };
 
   const handleTabChange = (tab: 'dashboard' | 'users' | 'rooms' | 'bookings') => {
+    // STAFF role can only access dashboard and bookings
+    if (!authService.isAdmin() && (tab === 'users' || tab === 'rooms')) {
+      alert('Bạn không có quyền truy cập mục này!');
+      return;
+    }
     setActiveTab(tab);
     if (tab === 'dashboard') loadDashboard();
     else if (tab === 'users') loadUsers();
@@ -253,18 +258,22 @@ const AdminPage = () => {
               >
                 <i className="fa fa-dashboard"></i> Dashboard
               </button>
-              <button 
-                className={`nav-item ${activeTab === 'users' ? 'active' : ''}`}
-                onClick={() => handleTabChange('users')}
-              >
-                <i className="fa fa-users"></i> Quản lý Users
-              </button>
-              <button 
-                className={`nav-item ${activeTab === 'rooms' ? 'active' : ''}`}
-                onClick={() => handleTabChange('rooms')}
-              >
-                <i className="fa fa-bed"></i> Quản lý Phòng
-              </button>
+              {authService.isAdmin() && (
+                <>
+                  <button 
+                    className={`nav-item ${activeTab === 'users' ? 'active' : ''}`}
+                    onClick={() => handleTabChange('users')}
+                  >
+                    <i className="fa fa-users"></i> Quản lý Users
+                  </button>
+                  <button 
+                    className={`nav-item ${activeTab === 'rooms' ? 'active' : ''}`}
+                    onClick={() => handleTabChange('rooms')}
+                  >
+                    <i className="fa fa-bed"></i> Quản lý Phòng
+                  </button>
+                </>
+              )}
               <button 
                 className={`nav-item ${activeTab === 'bookings' ? 'active' : ''}`}
                 onClick={() => handleTabChange('bookings')}

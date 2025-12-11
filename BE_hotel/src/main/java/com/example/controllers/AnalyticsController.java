@@ -21,6 +21,8 @@ import com.example.services.AnalyticsService;
 @RequestMapping("/api/admin/analytics")
 public class AnalyticsController {
 
+    private static final String ERROR_KEY = "error";
+
     @Autowired
     private AnalyticsService analyticsService;
 
@@ -41,7 +43,7 @@ public class AnalyticsController {
             
             return ResponseEntity.ok(overview);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, e.getMessage()));
         }
     }
 
@@ -56,7 +58,7 @@ public class AnalyticsController {
             
             return ResponseEntity.ok(analyticsService.getPopularRooms(start, end, limit));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, e.getMessage()));
         }
     }
 
@@ -65,7 +67,7 @@ public class AnalyticsController {
         try {
             return ResponseEntity.ok(analyticsService.getRevenueByMonth(year));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, e.getMessage()));
         }
     }
 
@@ -79,7 +81,7 @@ public class AnalyticsController {
             
             return ResponseEntity.ok(analyticsService.getBookingsByStatus(start, end));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, e.getMessage()));
         }
     }
 
@@ -93,7 +95,7 @@ public class AnalyticsController {
             
             return ResponseEntity.ok(analyticsService.getCouponUsageStats(start, end));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, e.getMessage()));
         }
     }
 
@@ -102,7 +104,7 @@ public class AnalyticsController {
         try {
             return ResponseEntity.ok(analyticsService.getRecentBookings(limit));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, e.getMessage()));
         }
     }
 
@@ -116,7 +118,7 @@ public class AnalyticsController {
             
             return ResponseEntity.ok(analyticsService.getRevenueBreakdown(start, end));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, e.getMessage()));
         }
     }
 
@@ -132,7 +134,7 @@ public class AnalyticsController {
             response.put("foodRevenue", analyticsService.getFoodOrderRevenue(start, end));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, e.getMessage()));
         }
     }
 
@@ -148,7 +150,7 @@ public class AnalyticsController {
             response.put("additionalServicesRevenue", analyticsService.getAdditionalServicesRevenue(start, end));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_KEY, e.getMessage()));
         }
     }
 }

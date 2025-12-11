@@ -44,6 +44,11 @@ const PaymentResult = () => {
   const [bookingId, setBookingId] = useState<number | null>(null);
 
   useEffect(() => {
+    loadFoodItems();
+    loadRestaurantTables();
+  }, []);
+
+  useEffect(() => {
     (async () => {
       try {
         const paramsObj: Record<string,string> = {};
@@ -54,8 +59,11 @@ const PaymentResult = () => {
           const pendingBookingId = localStorage.getItem('pendingBookingId');
           if (pendingBookingId) {
             localStorage.removeItem('pendingBookingId');
+            const parsed = Number(pendingBookingId);
+            setBookingId(Number.isNaN(parsed) ? null : parsed);
             navigate(`/additional-services?bookingId=${pendingBookingId}`);
           } else if (result.bookingId) {
+            setBookingId(result.bookingId);
             navigate(`/additional-services?bookingId=${result.bookingId}`);
           }
         } else {

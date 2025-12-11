@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -33,8 +34,9 @@ public class EmailService {
             } else {
                 log.warn("JavaMailSender is not configured; skipping send to={}", to);
             }
+        } catch (MailException e) {
+            log.error("Failed to send email (mail exception) to {}: {}", to, e.getMessage(), e);
         } catch (Exception e) {
-            // Log error but don't fail the request
             log.error("Failed to send email to {}: {}", to, e.getMessage(), e);
         }
     }

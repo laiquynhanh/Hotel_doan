@@ -25,14 +25,14 @@ import com.example.services.RestaurantService;
 
 @RestController
 @RequestMapping("/api/admin/restaurant")
-@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 public class AdminRestaurantController {
 
     @Autowired
     private RestaurantService restaurantService;
 
-    // Tables Management
+    // Tables Management - ADMIN only
     @GetMapping("/tables")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllTables() {
         try {
             List<RestaurantTableDTO> tables = restaurantService.getAllTables();
@@ -43,6 +43,7 @@ public class AdminRestaurantController {
     }
 
     @PostMapping("/tables")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createTable(@RequestBody RestaurantTable table) {
         try {
             RestaurantTableDTO created = restaurantService.createTable(table);
@@ -53,6 +54,7 @@ public class AdminRestaurantController {
     }
 
     @PutMapping("/tables/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateTable(
             @PathVariable Long id,
             @RequestBody RestaurantTable table) {
@@ -65,6 +67,7 @@ public class AdminRestaurantController {
     }
 
     @DeleteMapping("/tables/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteTable(@PathVariable Long id) {
         try {
             restaurantService.deleteTable(id);
@@ -74,8 +77,9 @@ public class AdminRestaurantController {
         }
     }
 
-    // Reservations Management
+    // Reservations Management - Both ADMIN and STAFF
     @GetMapping("/reservations")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<?> getAllReservations(
             @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
@@ -100,6 +104,7 @@ public class AdminRestaurantController {
     }
 
     @GetMapping("/reservations/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<?> getReservationById(@PathVariable Long id) {
         try {
             TableReservationDTO reservation = restaurantService.getReservationById(id);
@@ -110,6 +115,7 @@ public class AdminRestaurantController {
     }
 
     @PutMapping("/reservations/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<?> updateReservationStatus(
             @PathVariable Long id,
             @RequestParam String status) {
@@ -125,6 +131,7 @@ public class AdminRestaurantController {
     }
 
     @DeleteMapping("/reservations/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> cancelReservation(@PathVariable Long id) {
         try {
             restaurantService.cancelReservation(id, null);

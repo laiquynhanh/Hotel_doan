@@ -159,20 +159,6 @@ const FoodMenuManagement = () => {
     }
   }, [loadFoodItems]);
 
-  const handleToggleAvailability = useCallback(async (item: FoodItem) => {
-    try {
-      await adminService.updateFoodItem(item.id, {
-        ...item,
-        available: !item.available
-      });
-      showToast.success('Cập nhật trạng thái thành công');
-      loadFoodItems();
-    } catch (error: any) {
-      console.error('Error toggling availability:', error);
-      showToast.error(error.response?.data?.message || 'Không thể cập nhật trạng thái');
-    }
-  }, [loadFoodItems]);
-
   // Memoize filtered items để tránh re-filter mỗi render
   const filteredItems = useMemo(() => {
     return filterCategory === 'ALL'

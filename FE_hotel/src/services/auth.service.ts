@@ -20,6 +20,11 @@ export interface UpdateProfileData {
   phoneNumber?: string;
 }
 
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export const authService = {
   login: async (data: LoginData): Promise<LoginResponse> => {
     try {
@@ -76,6 +81,21 @@ export const authService = {
     return response.data;
   },
 
+  changePassword: async (data: ChangePasswordData) => {
+    const response = await api.post('/users/change-password', data);
+    return response.data;
+  },
+
+  forgotPassword: async (email: string) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  resetPassword: async (token: string, newPassword: string) => {
+    const response = await api.post('/auth/reset-password', { token, newPassword });
+    return response.data;
+  },
+
   isAuthenticated: (): boolean => {
     return !!localStorage.getItem('token');
   },
@@ -84,7 +104,19 @@ export const authService = {
     const userStr = localStorage.getItem('user');
     const user = userStr ? JSON.parse(userStr) : null;
     return user?.role === 'ADMIN';
-  }
+  },
+
+  isStaff: (): boolean => {
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    return user?.role === 'STAFF';
+  },
+
+  isAdminOrStaff: (): boolean => {
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    return user?.role === 'ADMIN' || user?.role === 'STAFF';
+  },
 };
 
 export default authService;

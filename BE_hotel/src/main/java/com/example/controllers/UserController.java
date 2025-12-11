@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.domain.User;
+import com.example.dto.ChangePasswordDTO;
 import com.example.dto.UpdateProfileDTO;
 import com.example.dto.UserResponseDTO;
 import com.example.services.JwtService;
@@ -22,6 +24,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/users")
 public class UserController {
 
+    private static final String BEARER_PREFIX = "Bearer ";
+
     @Autowired
     private UserService userService;
 
@@ -31,7 +35,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
         try {
-            String token = authHeader.replace("Bearer ", "");
+            String token = authHeader.replace(BEARER_PREFIX, "");
             String username = jwtService.extractUsername(token);
             
             User user = userService.findByUsername(username);
@@ -77,12 +81,28 @@ public class UserController {
         @Valid @RequestBody UpdateProfileDTO updateProfileDTO
     ) {
         try {
-            String token = authHeader.replace("Bearer ", "");
+            String token = authHeader.replace(BEARER_PREFIX, "");
             Long userId = jwtService.extractUserId(token);
             
             UserResponseDTO response = userService.updateProfile(userId, updateProfileDTO);
             
             return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+        @RequestHeader("Authorization") String authHeader,
+        @Valid @RequestBody ChangePasswordDTO changePasswordDTO
+    ) {
+        try {
+            String token = authHeader.replace(BEARER_PREFIX, "");
+            Long userId = jwtService.extractUserId(token);
+
+            userService.changePassword(userId, changePasswordDTO);
+            return ResponseEntity.ok("Đổi mật khẩu thành công");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

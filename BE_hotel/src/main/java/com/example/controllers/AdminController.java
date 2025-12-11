@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +32,6 @@ import com.example.repositories.RoomRepository;
 import com.example.repositories.UserRepository;
 import com.example.services.BookingService;
 import com.example.services.RoomService;
-import com.example.services.UserService;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -47,16 +47,14 @@ public class AdminController {
     private BookingRepository bookingRepository;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private RoomService roomService;
 
     @Autowired
     private BookingService bookingService;
 
-    // Dashboard Statistics
+    // Dashboard Statistics - Both ADMIN and STAFF can view
     @GetMapping("/dashboard/stats")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<?> getDashboardStats() {
         try {
             Long totalUsers = userRepository.count();
@@ -109,8 +107,9 @@ public class AdminController {
         }
     }
 
-    // User Management
+    // User Management - ADMIN only
     @GetMapping("/users")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
         try {
             List<User> users = userRepository.findAll();
@@ -125,6 +124,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
             userRepository.deleteById(id);
@@ -135,6 +135,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateProfileDTO dto) {
         try {
             User user = userRepository.findById(id)
@@ -152,6 +153,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateUserRole(@PathVariable Long id, @RequestParam String role) {
         try {
             User user = userRepository.findById(id)
@@ -164,8 +166,9 @@ public class AdminController {
         }
     }
 
-    // Room Management (delegated to RoomController but added here for convenience)
+    // Room Management - ADMIN only
     @GetMapping("/rooms")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllRooms() {
         try {
             List<RoomDTO> rooms = roomService.getAllRooms();
@@ -175,8 +178,9 @@ public class AdminController {
         }
     }
 
-    // Booking Management
+    // Booking Management - Both ADMIN and STAFF can view
     @GetMapping("/bookings")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<?> getAllBookings() {
         try {
             List<BookingDTO> bookings = bookingService.getAllBookings();
@@ -187,6 +191,7 @@ public class AdminController {
     }
 
     @PutMapping("/bookings/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<?> updateBookingStatus(
             @PathVariable Long id,
             @RequestParam BookingStatus status) {
@@ -199,6 +204,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/bookings/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteBooking(@PathVariable Long id) {
         try {
             bookingRepository.deleteById(id);

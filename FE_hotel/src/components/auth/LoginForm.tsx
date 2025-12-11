@@ -117,6 +117,11 @@ const LoginForm = () => {
                       {formik.errors.password}
                     </div>
                   )}
+                  <div className="text-end mt-2">
+                    <Link to="/forgot-password" style={{color: '#dfa974', fontSize: '14px'}}>
+                      Quên mật khẩu?
+                    </Link>
+                  </div>
                 </div>
 
                 <button 
